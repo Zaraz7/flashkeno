@@ -65,31 +65,31 @@ body {width:80ch; margin:auto;background-color:#FFF;color:#222;font-family:'Cour
 p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16px;}
 pre {line-height:1}
 th {background-color:#888;color:#FFF}
+.ascii {font-size:80%;line-height:0.9}
 
 @media (max-width:770px) {
 body {width:auto;}
+p{margin-left: 5px;}
 .fr, .fc {display:none;}
-.art-table td, .art-table th {width:auto;}
-}
+.art-table td, .art-table th {width:auto;}}
 @media (prefers-color-scheme: dark){
 body {background-color:#222;color:#FFF;}
 a {color:#0AF;}
-th {color:#222}
-}
+th {color:#222}}
 </style>
 </head>
 <center>
 <pre class="ascii">
 
- ___   ### ______________________________________ 
-|    ####/                                       |
-|   ##'    ,#  /"#  # # #  # ,# #   #  #  # .##, |
-|   ##    #"# /#.#  # # # ,#,7 ,#  ## ,#  # #  # |
-| /#####/ # # #""' /////' #""L #  ##' #""#' #  # |
-|   ##   #' # ###  #####  #  # ##" #  #  #  "##' |
-   ##' __________________________________________|
-/###'                                             
-##'  ${Каталог русскоговорящих || СНГ инди сайтов}
+ ___   ### ________________________________________ 
+|    ####/                                         |
+|   ##'    ,#  /"#  #  #  #  #  # #   #  #  # .##, |
+|   ##    #"# /#.#  #  #  # ,#,/ ,#  ## ,#  # #  # |
+| /#####/ # # #""' // // // #""L #  ##' #""#' #  # |
+|   ##   #' # ###  #######  #  # ##" #  #  #  "##' |
+   ##' ____________________________________________|
+/###'                                               
+##'    ${Каталог русскоговорящих || СНГ инди сайтов}
 
 </pre>
 </center>
