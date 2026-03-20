@@ -1,62 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-import os
-from database import SiteDatabase
-
-class HTMLGenerator:
-    def __init__(self, db_path='sites.db', template_path='template.html', output_path='index.html'):
-        self.db = SiteDatabase(db_path)
-        self.template_path = template_path
-        self.output_path = output_path
-    
-    def generate_site_row(self, site):
-        main_url = ''
-        for url in site['urls']:
-            if url['type'] == 'clearnet':
-                main_url = url['url']
-                break
-        if not main_url and site['urls']:
-            main_url = site['urls'][0]['url']
-        
-        button_html = f'''<td class="name">
-  <a href="{main_url}" target="_blank">
-   <img src="img/b/{site['button']}" alt="{site['name']}">
-  </a>
-</td>'''
-        
-        about_html = f'''<td>
-{site['about']}<br>
-<small>Также доступен в: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
-</td>'''
-        
-        return f'<tr>\n{button_html}\n{about_html}\n</tr>'
-    
-    def generate_html(self):
-        grouped_sites = self.db.get_sites_by_type()
-        
-        if os.path.exists(self.template_path):
-            with open(self.template_path, 'r', encoding='utf-8') as f:
-                template = f.read()
-        else:
-            template = self._create_default_template()
-        
-        table_content = []
-        
-        for site_type, sites in grouped_sites.items():
-            table_content.append(f'<tr><th colspan="2">{site_type.upper()}</th></tr>')
-            
-            for site in sites:
-                table_content.append(self.generate_site_row(site))
-        
-        final_html = template.replace('<!-- TABLE_CONTENT -->', '\n'.join(table_content))
-        
-        with open(self.output_path, 'w', encoding='utf-8') as f:
-            f.write(final_html)
-        
-        print(f"HTML страница успешно сгенерирована: {self.output_path}")
-    
-    def _create_default_template(self):
-        return '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -77,6 +19,7 @@ input[type="button"]:disabled{
 a #cipher {text-decoration: none;height:28ch;}
 .footer{font-style:italic;margin-bottom: 2ch;}
 img{width:88px;height:31px;image-rendering:pixelated;}
+.name{vertical-align:top;text-align:center;}
 
 @media (max-width:770px) {
 body {width:auto;}
@@ -105,10 +48,11 @@ input[type="button"]:disabled{  background-color:#222;
 /###'                                               
 ##'    ${Каталог русскоговорящих || СНГ инди сайтов}
 
+
 </pre>
 </center>
 <p>Это попытка собрать в единую кучу персональный, самодельный, переферийный Рунет. Этот сайт не о социальных сетях мегаполисах или о крупных группах, что находятся у магистрали известных мессенжеров. Это про маленькие городки федиверса, форумы-деревни и хуторы домашние страницы.</p>
-<p>Идея <a href="https://baseddogblog.neocities.org/rusindieweb/">не нова</a>, но хотелось бы видеть список длиннее и актуальнее. Чтож, почему бы не сделать его своими усилиями?</p>
+<p>Идея <a href="https://baseddogblog.neocities.org/rusindieweb/">не нова</a>, но хотелось бы видеть список длиннее и актуальнее. Чтож, почему бы не сделать его общими усилиями?</p>
 <center>
 <pre>
 
@@ -116,12 +60,11 @@ input[type="button"]:disabled{  background-color:#222;
 
 </pre>
 </center>
-<p>Пока список состоит из домашних страниц, но в будущем планируем дополнить)</p>
 <br>
 <hr>
 <table border="0" cellpadding="0" cellspacing="9">
   <tr>
-    <th>Сайт</th>
+    <th valign="top">Сайт</th>
     <th>Описание</th>
   </tr>
 <!-- TABLE_CONTENT -->
@@ -176,4 +119,4 @@ index++;
 <p class="footer">Администрируется <a href="http://zaraz7.narod.ws" target="_blank">Zaraz7</a>.</p>
 </center>
 </body>
-</html>'''
+</html>
