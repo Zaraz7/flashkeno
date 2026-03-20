@@ -17,7 +17,7 @@ class HTMLGenerator:
             main_url = site['urls'][0]['url']
         
         button_html = f'''<td>
-  <a href="{main_url}">
+  <a href="{main_url}" target="_blank">
    <img src="img/b/{site['button']}" alt=" "><br>
    {site['name']}
   </a>
@@ -25,7 +25,7 @@ class HTMLGenerator:
         
         about_html = f'''<td>
 {site['about']}<br>
-<small>Также доступен в: {', '.join([f'<a href="{u["url"]}">{u["type"]}</a>' for u in site['urls']])}</small>
+<small>Также доступен в: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
 </td>'''
         
         return f'<tr>\n{button_html}\n{about_html}\n</tr>'
@@ -112,5 +112,54 @@ th {color:#222}}
   </tr>
 <!-- TABLE_CONTENT -->
 </table>
+<hr>
+<p>У вас есть что предложить? Или же ваш <i>знакомый</i> имеет свой сайтец? Пришлите <b>ссылку, название и описание</b> ресурса. Адрес почтового ящика вы можете получить, нажав на кнопку ниже:</p>
+<center>
+  <input id="btnEmail" type="button" value="Получить адрес!" />
+<a id="aEmail" href="#" class="disabled">
+<pre id="cipher">zftI%izRAp0;^;,
+baonyk!4@o_g1#K
+!RrJ|%25^etw\zN
+0#ra^sB|.p*jmP*
+VPF,zh4lfNyc+YT
+t.WHN7y+%(fi#n)
+inLx|A@%M$I43Uu
+il__ENYw|wXN+]T
+PBeDCDsB1AyIz4Z
+1^aWlz>[[08p[^b
+cMNJPLwA\l.wiT"
+gh{(hf_@)_.sh!m
+Zo3.w}WN>JOli$D
+/hX|tselzEEc*t7
+evUXbm$AK_,Ot_e</pre></a>
+<script type="text/javascript">
+    const btnEmail = document.getElementById('btnEmail');
+    const cipher = document.getElementById('cipher');
+    btnEmail.addEventListener('click', emailEvent);
+    function emailEvent() {
+        btnEmail.disabled = true;
+        btnEmail.value = 'Расшифровка...';
+        const lenght = 16; 
+        var index = 1;
+        var start = '';
+        const id = setInterval(() => {
+            if (cipher.textContent.length <= lenght + 5) { 
+                clearInterval(id); 
+                btnEmail.value = 'Готово!';
+                const a = document.getElementById('aEmail');
+                a.href = 'mailto:'+cipher.textContent;
+                a.classList.remove('disabled');
+                return; 
+            }
+            const start = cipher.textContent.slice(0,index) || '';
+            cipher.textContent = start + cipher.textContent.slice(index+lenght);
+            index++;
+        }, 170);
+    }
+</script>
+</center>
+<p>Или вы можете прочитать адресс по главной диагонали в матрице из символов выше.</p>
+<hr>
+<p class="footer">Администрируется <a href="http://zaraz7.narod.ws" target="_blank">Zaraz7</a>.</p>
 </body>
 </html>'''
