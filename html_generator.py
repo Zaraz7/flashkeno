@@ -77,6 +77,7 @@ input[type="button"]:disabled{
 .disabled{pointer-events:none;color: #888888;}
 a #cipher {text-decoration: none;height:28ch;}
 .footer{font-style:italic;margin-bottom: 2ch;}
+img{width:88px;height:31px;image-rendering:pixelated;}
 
 @media (max-width:770px) {
 body {width:auto;}
@@ -121,7 +122,7 @@ input[type="button"]:disabled{  background-color:#222;
 <hr>
 <table border="0" cellpadding="0" cellspacing="9">
   <tr>
-    <th style="width:88px;">Сайт</th>
+    <th>Сайт</th>
     <th>Описание</th>
   </tr>
 <!-- TABLE_CONTENT -->
