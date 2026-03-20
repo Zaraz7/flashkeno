@@ -26,7 +26,7 @@ class HTMLGenerator:
         
         about_html = f'''<td>
 {site['about']}<br>
-<small>Также доступен в: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
+<small>Доступен в: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
 </td>'''
         
         return f'<tr>\n{button_html}\n{about_html}\n</tr>'
