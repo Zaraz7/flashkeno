@@ -10,28 +10,27 @@ def add_test_data():
             'about': 'Сайт не имеет конкретной направленности, это просто поток идей и сознания, который бесконечно стремится к конечной идее. Рада всем, постараюсь в дальнейшем на сайт выкладывать туториалы, мысли, и ресурсы для разработчика',
             'type': 'персональные сайты',
             'urls': [
-                ('clearnet', 'https://ockolus.neocities.org/'),
-                ('gemini', 'gemini://ockolus.space/')
+                ('clearnet', 'https://ockolus.neocities.org/')
             ]
         },
         {
-            'name': 'Пример форума',
-            'button': 'forum_button.gif',
-            'about': 'Интересный форум для общения',
+            'name': 'Форум народ',
+            'button': 'narodf.gif',
+            'about': 'Пользоваться форумом имеют право все желающие, в том числе и на тематику, даже не по теме <a href="http://w10.host" target="_blank" title="Web 1.0 hosting">хостинга</a>, в соответствующих разделах. Давайте возродим форумы, как полезное средство обмена информацией и интересного времяпровождения.',
             'type': 'форумы',
             'urls': [
-                ('clearnet', 'https://example-forum.com/'),
-                ('i2p', 'http://forum.i2p/')
+                ('clearnet', 'https://forum.narod.ws/')
             ]
         },
         {
-            'name': 'Социальная сеть',
-            'button': 'social_button.gif',
-            'about': 'Новая социальная сеть для разработчиков',
+            'name': 'LainLife',
+            'button': 'lainlife.gif',
+            'about': 'Первый инстанс OpenVK в Yggdrasil. Проект с открытым исходным кодом, воспроизводящий интерфейс и функционал «ВКонтакте» конца 2000‑х годов',
             'type': 'соцсети',
             'urls': [
-                ('clearnet', 'https://social.example.com/'),
-                ('zeronet', 'http://127.0.0.1:43110/social.bit/')
+                ('clearnet', 'https://lainlife.ru/'),
+                ('yggdrasil', 'http://[201:ea34:3017:90a7:d05b:5fd7:5c3b:a77f]/'),
+                ('yggdrasil', 'http://lainlife.ygg/')
             ]
         }
     ]
