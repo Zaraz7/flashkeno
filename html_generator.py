@@ -61,14 +61,22 @@ class HTMLGenerator:
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta title="Fлешкино - СНГ индивеб">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {width:80ch; margin:auto;background-color:#FFF;color:#222;font-family:'Courier New',Courier,monospace;}
 p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16px;}
 pre {line-height:1}
-th {background-color:#888;color:#FFF}
-.ascii {font-size:80%;line-height:0.9}
-.disabled {pointer-events: none;color: #888888;}
+th {background-color:#777;color:#FFF}
+input[type="button"]{border: 0;border-radius: 1px;background-color: #24F;color:#FFF;margin-bottom:1ch;}
+input[type="button"]:disabled{
+  background-color: #FFF;
+  color:#222;
+}
+.ascii{font-size:70%;line-height:0.9;}
+.disabled{pointer-events:none;color: #888888;}
+a #cipher {text-decoration: none;height:28ch;}
+.footer{font-style:italic;margin-bottom: 2ch;}
 
 @media (max-width:770px) {
 body {width:auto;}
@@ -77,20 +85,23 @@ p{margin-left: 5px;}
 .art-table td, .art-table th {width:auto;}}
 @media (prefers-color-scheme: dark){
 body {background-color:#222;color:#FFF;}
-a {color:#0AF;}
-th {color:#222}}
+a {color:#4AF;}
+th {background-color:#CCC;color:#222}
+input[type="button"]:disabled{  background-color:#222;
+  color:#FFF;}}
 </style>
 </head>
 <center>
 <pre class="ascii">
 
- ___   ### _________________________________________ 
-|    ####/                                          |
-|   ##'    ,#  /##, #  #  #  #  // #   #  #  # .##, |
-|   ##    #"# /#..# #  #  # ,#,// .#  ## ,#  # #  # |
-| /#####/ # # #""' // // // #""|| #  ##' #""#' #  # |
-|   ##   #' # "##' #######  #   # ##" #  #  #  "##' |
-   ##' _____________________________________________|
+ ___   ### __________________________________________ 
+|    ####/                                           |
+|   ##'    ,#  /##, #  #  #  #  #/ #   #  #  # .##,  |
+|   ##    #"# /#  # #  #  #  # #/  #  ##  #  # #  #  |
+    ##    # # ####' #  #  # ###   #  ,#' /###/ #  #  |
+ /######/ # # #    // // // #  #  #  ##  #  #  #  #  |
+    ##   #' # "##' #######  #   # ##" #  #  #  "##'  |
+   ##' ______________________________________________|
 /###'                                               
 ##'    ${Каталог русскоговорящих || СНГ инди сайтов}
 
@@ -110,7 +121,7 @@ th {color:#222}}
 <hr>
 <table border="0" cellpadding="0" cellspacing="9">
   <tr>
-    <th>Сайт</th>
+    <th style="width:88px;">Сайт</th>
     <th>Описание</th>
   </tr>
 <!-- TABLE_CONTENT -->
@@ -136,33 +147,33 @@ Zo3.w}WN>JOli$D
 /hX|tselzEEc*t7
 evUXbm$AK_,Ot_e</pre></a>
 <script type="text/javascript">
-    const btnEmail = document.getElementById('btnEmail');
-    const cipher = document.getElementById('cipher');
-    btnEmail.addEventListener('click', emailEvent);
-    function emailEvent() {
-        btnEmail.disabled = true;
-        btnEmail.value = 'Расшифровка...';
-        const lenght = 16; 
-        var index = 1;
-        var start = '';
-        const id = setInterval(() => {
-            if (cipher.textContent.length <= lenght + 5) { 
-                clearInterval(id); 
-                btnEmail.value = 'Готово!';
-                const a = document.getElementById('aEmail');
-                a.href = 'mailto:'+cipher.textContent;
-                a.classList.remove('disabled');
-                return; 
-            }
-            const start = cipher.textContent.slice(0,index) || '';
-            cipher.textContent = start + cipher.textContent.slice(index+lenght);
-            index++;
-        }, 170);
-    }
+const btnEmail = document.getElementById('btnEmail');
+const cipher = document.getElementById('cipher');
+btnEmail.addEventListener('click', emailEvent);
+function emailEvent() {
+btnEmail.disabled = true;
+btnEmail.value = 'Расшифровка...';
+const lenght = 16; 
+var index = 1;
+var start = '';
+const id = setInterval(() => {
+if (cipher.textContent.length <= lenght + 5) { 
+clearInterval(id); 
+btnEmail.value = 'Готово!';
+const a = document.getElementById('aEmail');
+a.href = 'mailto:'+cipher.textContent;
+a.classList.remove('disabled');
+return; 
+}
+const start = cipher.textContent.slice(0,index) || '';
+cipher.textContent = start + cipher.textContent.slice(index+lenght);
+index++;
+}, 170);
+}
 </script>
-</center>
 <p>Или вы можете прочитать адресс по главной диагонали в матрице из символов выше.</p>
 <hr>
 <p class="footer">Администрируется <a href="http://zaraz7.narod.ws" target="_blank">Zaraz7</a>.</p>
+</center>
 </body>
 </html>'''
