@@ -66,6 +66,7 @@ p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16p
 pre {line-height:1}
 th {background-color:#888;color:#FFF}
 .ascii {font-size:80%;line-height:0.9}
+.disabled {pointer-events: none;color: #888888;}
 
 @media (max-width:770px) {
 body {width:auto;}
