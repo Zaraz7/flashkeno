@@ -32,6 +32,25 @@ def add_test_data():
                 ('yggdrasil', 'http://[201:ea34:3017:90a7:d05b:5fd7:5c3b:a77f]/'),
                 ('yggdrasil', 'http://lainlife.ygg/')
             ]
+        },
+        {
+            'name': 'RetroShow',
+            'button': 'retroshow.gif',
+            'about': 'Небольшой видеохостинг, который стилизован под YouTube образца августа 2005 года',
+            'type': 'соцсети',
+            'urls': [
+                ('clearnet', 'https://retroshowru.hoho.ws'),
+                ('clearnet', 'https://retroshow.hoho.ws')
+            ]
+        },
+        {
+            'name': 'VCFG Softworks',
+            'button': 'vcfg2.gif',
+            'about': 'Сайт фирмы "VCFG Softworks" на котором можно узнать новости.',
+            'type': 'персональные сайты',
+            'urls': [
+                ('clearnet', 'https://vcfg-softworks.do.am/')
+            ]
         }
     ]
     

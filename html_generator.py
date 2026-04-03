@@ -28,7 +28,6 @@ class HTMLGenerator:
 {site['about']}<br>
 <small>Доступен в: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
 </td>'''
-        
         return f'<tr>\n{button_html}\n{about_html}\n</tr>'
     
     def generate_html(self):
