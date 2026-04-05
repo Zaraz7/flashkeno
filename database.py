@@ -108,7 +108,7 @@ class SiteDatabase:
                 LEFT JOIN url u ON s.id = u.site_id
                 LEFT JOIN url_type ut ON u.type_id = ut.id
                 GROUP BY s.id
-                ORDER BY st.id, s.name
+                ORDER BY st.id, s.id
             ''')
             sites = []
             for row in c.fetchall():
