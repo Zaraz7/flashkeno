@@ -55,17 +55,17 @@ class SiteDatabase:
             cursor.execute('INSERT OR IGNORE INTO url_type (name) VALUES (?)', (t,))
 
     # --- helper ---
-    def ensure_position_column(self):
-        with self.get_connection() as conn:
-            c = conn.cursor()
-            c.execute("PRAGMA table_info(site)")
-            cols = [r[1] for r in c.fetchall()]
-            if 'position' not in cols:
-                c.execute('ALTER TABLE site ADD COLUMN position INTEGER')
-                c.execute('SELECT id FROM site ORDER BY id')
-                for idx, (sid,) in enumerate(c.fetchall(), start=1):
-                    c.execute('UPDATE site SET position = ? WHERE id = ?', (idx, sid))
-                conn.commit()
+    # def ensure_position_column(self):
+    #     with self.get_connection() as conn:
+    #         c = conn.cursor()
+    #         c.execute("PRAGMA table_info(site)")
+    #         cols = [r[1] for r in c.fetchall()]
+    #         if 'position' not in cols:
+    #             c.execute('ALTER TABLE site ADD COLUMN position INTEGER')
+    #             c.execute('SELECT id FROM site ORDER BY id')
+    #             for idx, (sid,) in enumerate(c.fetchall(), start=1):
+    #                 c.execute('UPDATE site SET position = ? WHERE id = ?', (idx, sid))
+    #             conn.commit()
 
     # --- CRUD and queries ---
     def add_site(self, name, button, about, type_name, urls):
@@ -79,11 +79,11 @@ class SiteDatabase:
                 c.execute('INSERT INTO site_type (name) VALUES (?)', (type_name,))
                 type_id = c.lastrowid
             # compute next position
-            c.execute('SELECT MAX(position) FROM site')
+            c.execute('SELECT MAX(id) FROM site')
             maxpos = c.fetchone()[0] or 0
             pos = maxpos + 1
-            c.execute('INSERT INTO site (name, button, about, type_id) VALUES (?, ?, ?, ?, ?)',
-                      (name, button, about, type_id, pos))
+            c.execute('INSERT INTO site (name, button, about, type_id) VALUES (?, ?, ?, ?)',
+                      (name, button, about, type_id))
             site_id = c.lastrowid
             for url_type_name, url in urls or []:
                 c.execute('SELECT id FROM url_type WHERE name = ?', (url_type_name,))
