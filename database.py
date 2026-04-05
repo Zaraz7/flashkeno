@@ -120,6 +120,17 @@ class SiteDatabase:
                         site['urls'].append({'type': typ, 'url': url})
                 sites.append(site)
             return sites
+    def get_sites_by_type(self):
+        sites = self.get_all_sites()
+        grouped = {}
+        
+        for site in sites:
+            site_type = site['type']
+            if site_type not in grouped:
+                grouped[site_type] = []
+            grouped[site_type].append(site)
+        
+        return grouped
 
     def get_site(self, site_id):
         with self.get_connection() as conn:
