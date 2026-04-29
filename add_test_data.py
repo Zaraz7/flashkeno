@@ -1,4 +1,4 @@
-from database import SiteDatabase
+from app.database import SiteDatabase
 
 def add_test_data():
     db = SiteDatabase()

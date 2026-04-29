@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from database import SiteDatabase
+from app.database import SiteDatabase
 
 db = SiteDatabase()
 

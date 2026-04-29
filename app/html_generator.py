@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
-from database import SiteDatabase
+from app.database import SiteDatabase
 
 class HTMLGenerator:
     def __init__(self, db_path='sites.db', template_path='template.html', output_path='index.html'):
@@ -9,7 +9,7 @@ class HTMLGenerator:
         self.template_path = template_path
         self.output_path = output_path
     
-    def generate_site_row(self, site):
+    def generate_site_row(self, site, url_type="clearnet"):
         main_url = ''
         for url in site['urls']:
             if url['type'] == 'clearnet':
@@ -23,15 +23,22 @@ class HTMLGenerator:
    <img src="img/b/{site['button']}" alt="{site['name']}">
   </a>
 </td>'''
-        
         about_html = f'''<td>
 {site['about']}<br>
 <small>Доступен в: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
 </td>'''
         return f'<tr>\n{button_html}\n{about_html}\n</tr>'
+    def get_table_rows(self):
+        grouped_sites = self.db.get_sites_by_type()
+        table_content = []
+        for site_type, sites in grouped_sites.items():
+          table_content.append(f'<tr><th colspan="2">{site_type.upper()}</th></tr>')
+          
+          for site in sites:
+              table_content.append(self.generate_site_row(site))
+        return '\n'.join(table_content)
     
     def generate_html(self):
-        grouped_sites = self.db.get_sites_by_type()
         
         if os.path.exists(self.template_path):
             with open(self.template_path, 'r', encoding='utf-8') as f:
@@ -39,15 +46,8 @@ class HTMLGenerator:
         else:
             template = self._create_default_template()
         
-        table_content = []
-        
-        for site_type, sites in grouped_sites.items():
-            table_content.append(f'<tr><th colspan="2">{site_type.upper()}</th></tr>')
-            
-            for site in sites:
-                table_content.append(self.generate_site_row(site))
-        
-        final_html = template.replace('<!-- TABLE_CONTENT -->', '\n'.join(table_content))
+
+        final_html = template.replace('<!-- TABLE_CONTENT -->', self.get_table_rows())
         
         with open(self.output_path, 'w', encoding='utf-8') as f:
             f.write(final_html)
