@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta title="Fлешкино - СНГ индивеб">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {width:80ch; margin:auto;background-color:#FFF;color:#222;font-family:'Courier New',Courier,monospace;}
+p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16px;}
+pre {line-height:1}
+th {background-color:#888;color:#FFF}
+input[type="button"]{border: 0;border-radius: 1px;background-color: #24F;color:#FFF;margin-bottom:1ch;}
+input[type="button"]:disabled{background-color: #FFF;color:#222;}
+tr:nth-child(even) {background: #DDD;}
+.ascii{font-size:70%;line-height:0.9;}
+.disabled{pointer-events:none;color: #888888;}
+a #cipher {text-decoration: none;height:28ch;}
+.footer{font-style:italic;margin-bottom: 2ch;}
+img{width:88px;height:31px;image-rendering:pixelated;}
+.name{vertical-align:top;text-align:center;}
+
+@media (max-width:770px) {
+body {width:auto;}
+p{margin-left: 5px;}
+.fr, .fc {display:none;}
+.art-table td, .art-table th {width:auto;}}
+@media (prefers-color-scheme: dark){
+body {background-color:#222;color:#FFF;}
+a {color:#4AF;}
+tr:nth-child(even) {background: #111;}
+th {background-color:#CCC;color:#222}
+input[type="button"]:disabled{  background-color:#222;
+  color:#FFF;}}
+</style>
+</head>
+<center>
+<pre class="ascii">
+
+ ___   ### __________________________________________ 
+|    ####/                                           |
+|   ##'    ,#  /##, #  #  #  #  #/ #   #  #  # .##,  |
+|   ##    #"# /#  # #  #  #  # #/  #  ##  #  # #  #  |
+    ##    # # ####' #  #  # ###   #  ,#' /###/ #  #  |
+ /######/ # # #    // // // #  #  #  ##  #  #  #  #  |
+    ##   #' # "##' #######  #   # ##" #  #  #  "##'  |
+   ##' ______________________________________________|
+/###'                                               
+##'    ${Каталог русскоговорящих || СНГ инди сайтов}
+
+
+</pre>
+</center>
+<p>Это попытка собрать в единую кучу персональный, самодельный, переферийный Рунет. Этот сайт не о социальных сетях мегаполисах или о крупных группах, что находятся у магистрали известных мессенжеров. Это про маленькие городки федиверса, форумы-деревни и хуторы домашние страницы.</p>
+<p>Идея <a href="https://baseddogblog.neocities.org/rusindieweb/">не нова</a>, но хотелось бы видеть список длиннее и актуальнее. Чтож, почему бы не сделать его общими усилиями?</p>
+<center>
+<pre>
+
+<span style="background-color:yellow;color:black;">/// under construction ///</span>
+
+</pre>
+</center>
+<br>
+<hr>
+<table cellpadding="0" cellspacing="9">
+  <tr>
+    <th valign="top">Сайт</th>
+    <th>Описание</th>
+  </tr>
+{% block table_rows %}{% endblock %}
+</table>
+<hr>
+<p>У вас есть что предложить? Или же ваш <i>знакомый</i> имеет свой сайтец? Пришлите <b>ссылку, название и описание</b> ресурса. Адрес почтового ящика вы можете получить, нажав на кнопку ниже:</p>
+<center>
+  <input id="btnEmail" type="button" value="Получить адрес!" />
+<a id="aEmail" href="#" class="disabled">
+<pre id="cipher">zftI%izRAp0;^;,
+baonyk!4@o_g1#K
+!RrJ|%25^etw\zN
+0#ra^sB|.p*jmP*
+VPF,zh4lfNyc+YT
+t.WHN7y+%(fi#n)
+inLx|A@%M$I43Uu
+il__ENYw|wXN+]T
+PBeDCDsB1AyIz4Z
+1^aWlz>[[08p[^b
+cMNJPLwA\l.wiT"
+gh{(hf_@)_.sh!m
+Zo3.w}WN>JOli$D
+/hX|tselzEEc*t7
+evUXbm$AK_,Ot_e</pre></a>
+<script type="text/javascript">
+const btnEmail = document.getElementById('btnEmail');
+const cipher = document.getElementById('cipher');
+btnEmail.addEventListener('click', emailEvent);
+function emailEvent() {
+btnEmail.disabled = true;
+btnEmail.value = 'Расшифровка...';
+const lenght = 16; 
+var index = 1;
+var start = '';
+const id = setInterval(() => {
+if (cipher.textContent.length <= lenght + 5) { 
+clearInterval(id); 
+btnEmail.value = 'Готово!';
+const a = document.getElementById('aEmail');
+a.href = 'mailto:'+cipher.textContent;
+a.classList.remove('disabled');
+return; 
+}
+const start = cipher.textContent.slice(0,index) || '';
+cipher.textContent = start + cipher.textContent.slice(index+lenght);
+index++;
+}, 170);
+}
+</script>
+<p>Или вы можете прочитать адресс по главной диагонали в матрице из символов выше.</p>
+<hr>
+<p class="footer">Администрируется <a href="http://zaraz7.narod.ws" target="_blank">Zaraz7</a>.</p>
+</center>
+</body>
+</html>

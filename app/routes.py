@@ -2,11 +2,13 @@
 from flask import render_template
 from app import app
 from app.html_generator import HTMLGenerator
+from app.database import SiteDatabase
 
-generator = HTMLGenerator()
+db = SiteDatabase("sites.db")
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', table_rows=generator.get_table_rows())
+    grouped_sites = db.get_sites_by_type()
+    return render_template('index.html', grouped_sites=grouped_sites)
 
