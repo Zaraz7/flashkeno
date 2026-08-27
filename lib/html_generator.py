@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
-from lib.database import SiteDatabase
+from database import SiteDatabase
 
 class HTMLGenerator:
     def __init__(self, db_path='sites.db', template_path='../template/index.html', output_path='index.html'):
@@ -39,16 +39,7 @@ class HTMLGenerator:
         return '\n'.join(table_content)
     
     def generate_html(self):
-        
-        if os.path.exists(self.template_path):
-            with open(self.template_path, 'r', encoding='utf-8') as f:
-                template = f.read()
-        else:
-            return
-            #template = self._create_default_template()
-        
-
-        final_html = template.replace('<!-- TABLE_CONTENT -->', self.get_table_rows())
+        final_html = self.generate_list()
         
         with open(self.output_path, 'w', encoding='utf-8') as f:
             f.write(final_html)
@@ -71,4 +62,4 @@ class HTMLGenerator:
 Ничего не нашлось
 </pre>
 '''
-        return template.replace('<!-- TABLE_CONTENT -->', self.get_table_rows())
+        return template.replace('<!--TABLE-->', self.get_table_rows())
