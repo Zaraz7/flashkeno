@@ -3,7 +3,6 @@ import sqlite3
 class SiteDatabase:
     def __init__(self, db_path='sites.db'):
         self.db_path = db_path
-        self.init_database()
 
     def get_connection(self):
         return sqlite3.connect(self.db_path)

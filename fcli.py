@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import argparse
-from app.database import SiteDatabase
+from lib.database import SiteDatabase
+import config
 
-db = SiteDatabase()
+db = SiteDatabase(config.PROJECT_PATH / 'db' / 'sites.db')
 
 def cmd_list(args):
     sites = db.get_all_sites()
