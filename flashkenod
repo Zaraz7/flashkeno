@@ -1,0 +1,3 @@
+#!/bin/sh
+python lib/generate.py
+python -m http.server --cgi
