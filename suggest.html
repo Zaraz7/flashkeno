@@ -11,8 +11,8 @@ body {width:80ch; margin:auto;background-color:#FFF;color:#222;font-family:'Cour
 p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16px;}
 pre {line-height:1}
 th {background-color:#888;color:#FFF}
-input[type="button"]{border: 0;border-radius: 1px;background-color: #24F;color:#FFF;margin-bottom:1ch;}
-input[type="button"]:disabled{background-color: #FFF;color:#222;}
+input[type="submit"]{border: 0;border-radius: 1px;background-color: #24F;color:#FFF;margin-bottom:1ch;}
+input[type="submit"]:disabled{background-color: #FFF;color:#222;}
 input[type="text"], input[type="url"] {
   background-color: #FFF;
   color: #222;
@@ -25,6 +25,31 @@ a #cipher {text-decoration: none;height:28ch;}
 .footer{font-style:italic;margin-bottom: 2ch;}
 img{width:88px;height:31px;image-rendering:pixelated;}
 .name{vertical-align:top;text-align:center;}
+
+.radio {
+  display: block;
+  cursor: pointer;
+}
+
+.radio input {
+  position: absolute;
+  opacity: 0;
+}
+
+.radio span::before {
+  content: "[ ] ";
+  white-space: pre;
+}
+
+.radio input:checked + span::before {
+  content: "[*] ";
+}
+
+.radio input:focus-visible + span {
+  outline: 1px dotted currentColor;
+  outline-offset: 2px;
+}
+
 
 @media (max-width:770px) {
 body {width:auto;}
@@ -65,23 +90,34 @@ input[type="submit"]:disabled{  background-color:#222;
 <form action="/cgi-bin/suggest.py">
    <label for="name">Название*:</label><br>
    <input type="text" name="name"><br>
-   <label for="urls">Ссылка на сайт* (через запятую, если их несколько):</label><br>
-   <input type="text" name="urls"><br>
+   <label for="url">Ссылка на сайт*:</label><br>
+   <input type="url" name="url"><br>
    <label for="button">Ссылка на кнопку (если есть):</label><br>
-   <input type="text" name="button"><br>
-   <label for="about">Описание*:</label><br>
+   <input type="url" name="button"><br>
+   <label for="about">Описание*. + Сюда можно написать дополнительные адреса, по которым доступен сайт:</label><br>
    <textarea name="about" rows="3" cols="64" placeholder="Введите текст..."></textarea><br>
    <fieldset>
       <legend>Тип</legend>
-      <input type="radio" name="radio-0" id="radio-0" checked/>
-      <label for="radio">персональный сайт</label>
-      <input type="radio" name="radio-0" id="radio-0" checked/>
-      <label for="radio">соцсеть</label>
-      <input type="radio" name="radio-0" id="radio-0" checked/>
-      <label for="radio">форум</label>
-      <input type="radio" name="radio-0" id="radio-0" checked/>
-      <label for="radio">другое</label>
-    </fieldset>
+      
+      <label class="radio">
+         <input type="radio" name="type_id" value="0" checked/>
+         <span aria-hidden="true"></span>персональный сайт
+      </label>
+      <label class="radio">
+         <input type="radio" name="type_id" value="1"/>
+         <span aria-hidden="true"></span>соцсеть
+      </label>
+      <label class="radio">
+         <input type="radio" name="type_id" value="2"/>
+         <span aria-hidden="true"></span>форум
+      </label class="radio">
+      <label class="radio">
+         <input type="radio" name="type_id" value="3"/>
+         <span aria-hidden="true"></span>другое
+      </label>
+    </fieldset><br>
+   <label for="email">Опционально можете написать свой email, чтобы узнать о статусе рассмотрения заявки:</label>
+   <input type="email" name="email"><br><br>
    <input type="submit">
 </form>
 <center>
