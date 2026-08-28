@@ -49,7 +49,8 @@ class SiteDatabase:
         site_types = ['персональные сайты', 'соцсети', 'форумы']
         for t in site_types:
             cursor.execute('INSERT OR IGNORE INTO site_type (name) VALUES (?)', (t,))
-        url_types = ['clearnet', 'yggdrasil', 'i2p', 'zeronet', 'gemini']
+        # TODO: ? Switch from "clearnet" to http, https
+        url_types = ['clearnet', 'yggdrasil', 'i2p', 'zeronet', 'gemini', 'http', 'https']
         for t in url_types:
             cursor.execute('INSERT OR IGNORE INTO url_type (name) VALUES (?)', (t,))
 
