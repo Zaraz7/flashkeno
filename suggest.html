@@ -13,7 +13,7 @@ pre {line-height:1}
 th {background-color:#888;color:#FFF}
 input[type="submit"]{border: 0;border-radius: 1px;background-color: #24F;color:#FFF;margin-bottom:1ch;}
 input[type="submit"]:disabled{background-color: #FFF;color:#222;}
-input[type="text"], input[type="url"] {
+input[type="text"], input[type="url"], input[type="email"] {
   background-color: #FFF;
   color: #222;
   border-style: none none solid none;
@@ -49,7 +49,6 @@ img{width:88px;height:31px;image-rendering:pixelated;}
   outline: 1px dotted currentColor;
   outline-offset: 2px;
 }
-
 
 @media (max-width:770px) {
 body {width:auto;}
@@ -89,13 +88,13 @@ input[type="submit"]:disabled{  background-color:#222;
 <p>У вас есть что предложить? Или же ваш <i>знакомый</i> имеет свой сайтец? Тогда заполните эту форму:<br></p>
 <form action="/cgi-bin/suggest.py">
    <label for="name">Название*:</label><br>
-   <input type="text" name="name"><br>
+   <input type="text" name="name" required><br>
    <label for="url">Ссылка на сайт*:</label><br>
-   <input type="url" name="url"><br>
+   <input type="url" name="url" value="https://" required><br>
    <label for="button">Ссылка на кнопку (если есть):</label><br>
    <input type="url" name="button"><br>
    <label for="about">Описание*. + Сюда можно написать дополнительные адреса, по которым доступен сайт:</label><br>
-   <textarea name="about" rows="3" cols="64" placeholder="Введите текст..."></textarea><br>
+   <textarea name="about" rows="3" cols="64" placeholder="Введите текст..." required></textarea><br>
    <fieldset>
       <legend>Тип</legend>
       
@@ -117,7 +116,7 @@ input[type="submit"]:disabled{  background-color:#222;
       </label>
     </fieldset><br>
    <label for="email">Опционально можете написать свой email, чтобы узнать о статусе рассмотрения заявки:</label>
-   <input type="email" name="email"><br><br>
+   <input type="email" name="email" placeholder="example@mail.su"><br><br>
    <input type="submit">
 </form>
 <center>
