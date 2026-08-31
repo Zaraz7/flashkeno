@@ -2,8 +2,9 @@
 import argparse
 from lib.database import SiteDatabase
 import config
+from pathlib import Path
 
-db = SiteDatabase(config.PROJECT_PATH / 'db' / 'sites.db')
+db = SiteDatabase(Path(__file__).parent / 'db' / 'sites.db')
 
 def cmd_list(args):
     sites = db.get_all_sites()
@@ -58,6 +59,61 @@ def cmd_find(args):
     for s in res:
         print(f"{s['id']:3d} | {s['type'] or '-':15} | {s['name']}")
 
+def cmd_suggestions_list(args):
+    """Показать список заявок"""
+    status = args.status if hasattr(args, 'status') else None
+    suggestions = db.get_suggestions(status)
+    
+    if not suggestions:
+        print('No suggestions found')
+        return
+    
+    print(f"{'ID':4} | {'Статус':10} | {'Имя':20} | {'Тип':15} | {'URL':30} | {'Дата':20}")
+    print('-' * 105)
+    for s in suggestions:
+        print(f"{s['id']:4d} | {s['status']:10} | {s['name'][:20]:20} | {s['type'] or '-':15} | {s['url'][:30]:30} | {s['submitted_at'][:19]:20}")
+
+def cmd_suggestions_show(args):
+    """Показать подробную информацию о заявке"""
+    suggestion = db.get_suggestion(args.id)
+    if not suggestion:
+        print(f'Suggestion {args.id} not found')
+        return
+    
+    print(f"ID: {suggestion['id']}")
+    print(f"Статус: {suggestion['status']}")
+    print(f"Имя: {suggestion['name']}")
+    print(f"Email: {suggestion['email'] or '-'}")
+    print(f"URL: {suggestion['url']}")
+    print(f"Кнопка: {suggestion['button'] or '-'}")
+    print(f"Описание: {suggestion['about']}")
+    print(f"Тип: {suggestion['type'] or '-'}")
+    print(f"IP клиента: {suggestion['client_ip']}")
+    print(f"User-Agent: {suggestion['client_agent']}")
+    print(f"Дата подачи: {suggestion['submitted_at']}")
+
+def cmd_suggestions_approve(args):
+    """Одобрить заявку и создать сайт"""
+    site_id = db.approve_suggestion(args.id)
+    if site_id:
+        print(f'Suggestion {args.id} approved, site created with ID: {site_id}')
+    else:
+        print(f'Cannot approve suggestion {args.id}')
+
+def cmd_suggestions_reject(args):
+    """Отклонить заявку (отправить в корзину)"""
+    if db.update_suggestion_status(args.id, 'rejected'):
+        print(f'Suggestion {args.id} rejected')
+    else:
+        print(f'Cannot reject suggestion {args.id}')
+
+def cmd_suggestions_delete(args):
+    """Удалить заявку"""
+    if db.delete_suggestion(args.id):
+        print(f'Suggestion {args.id} deleted')
+    else:
+        print(f'Cannot delete suggestion {args.id}')
+
 def main():
     p = argparse.ArgumentParser(prog='sitectl')
     sub = p.add_subparsers(dest='cmd')
@@ -72,6 +128,28 @@ def main():
     a = sub.add_parser('move'); a.add_argument('id', type=int); a.add_argument('direction', choices=['up','down']); a.set_defaults(func=cmd_move)
 
     a = sub.add_parser('find'); a.add_argument('query'); a.set_defaults(func=cmd_find)
+
+    a = sub.add_parser('suggestions-list', help='List all suggestions')
+    a.add_argument('--status', choices=['pending', 'approved', 'rejected'], help='Filter by status')
+    a.set_defaults(func=cmd_suggestions_list)
+    
+    a = sub.add_parser('suggestions-show', help='Show suggestion details')
+    a.add_argument('id', type=int, help='Suggestion ID')
+    a.set_defaults(func=cmd_suggestions_show)
+    
+    a = sub.add_parser('suggestions-approve', help='Approve suggestion and create site')
+    a.add_argument('id', type=int, help='Suggestion ID')
+    a.set_defaults(func=cmd_suggestions_approve)
+    
+    a = sub.add_parser('suggestions-reject', help='Reject suggestion (move to trash)')
+    a.add_argument('id', type=int, help='Suggestion ID')
+    a.set_defaults(func=cmd_suggestions_reject)
+    
+    a = sub.add_parser('suggestions-delete', help='Delete suggestion')
+    a.add_argument('id', type=int, help='Suggestion ID')
+    a.set_defaults(func=cmd_suggestions_delete)
+
+
 
     args = p.parse_args()
     if not hasattr(args, 'func'):

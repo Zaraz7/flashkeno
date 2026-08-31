@@ -42,6 +42,22 @@ class SiteDatabase:
                     FOREIGN KEY (type_id) REFERENCES url_type(id)
                 )
             ''')
+            c.execute('''
+                CREATE TABLE IF NOT EXISTS suggestion (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email TEXT,
+                    name TEXT NOT NULL,
+                    url TEXT NOT NULL,
+                    button TEXT,
+                    about TEXT,
+                    type_id INTEGER,
+                    client_ip TEXT,
+                    client_agent TEXT,
+                    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    status TEXT DEFAULT 'pending',
+                    FOREIGN KEY (type_id) REFERENCES site_type(id)
+                )
+            ''')
             self._init_default_data(c)
             conn.commit()
 
@@ -253,3 +269,120 @@ class SiteDatabase:
                 ORDER BY s.id
             ''', (q, q))
             return [{'id': r[0], 'name': r[1], 'button': r[2], 'about': r[3], 'type': r[4], 'position': r[5]} for r in c.fetchall()]
+
+    def add_suggestion(self, email, name, url, button, about, type_id, client_ip, client_agent):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            # хуня
+            # Получаем или создаем тип сайта
+            # c.execute('SELECT id FROM site_type WHERE name = ?', (type_name,))
+            # r = c.fetchone()
+            # if r:
+            #     type_id = r[0]
+            # else:
+            #     c.execute('INSERT INTO site_type (name) VALUES (?)', (type_name,))
+            #     type_id = c.lastrowid
+            
+            c.execute('''
+                INSERT INTO suggestion (email, name, url, button, about, type_id, client_ip, client_agent)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (email, name, url, button, about, type_id, client_ip, client_agent))
+            conn.commit()
+            return c.lastrowid
+
+    def get_suggestions(self, status=None):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            query = '''
+                SELECT s.id, s.email, s.name, s.url, s.button, s.about, 
+                       st.name as site_type, s.client_ip, s.client_agent, 
+                       s.submitted_at, s.status
+                FROM suggestion s
+                LEFT JOIN site_type st ON s.type_id = st.id
+            '''
+            params = []
+            if status:
+                query += ' WHERE s.status = ?'
+                params.append(status)
+            query += ' ORDER BY s.submitted_at DESC'
+            
+            c.execute(query, params)
+            suggestions = []
+            for row in c.fetchall():
+                suggestions.append({
+                    'id': row[0],
+                    'email': row[1],
+                    'name': row[2],
+                    'url': row[3],
+                    'button': row[4],
+                    'about': row[5],
+                    'type': row[6],
+                    'client_ip': row[7],
+                    'client_agent': row[8],
+                    'submitted_at': row[9],
+                    'status': row[10]
+                })
+            return suggestions
+
+    def update_suggestion_status(self, suggestion_id, status):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            c.execute('UPDATE suggestion SET status = ? WHERE id = ?', (status, suggestion_id))
+            conn.commit()
+            return c.rowcount > 0
+
+    def delete_suggestion(self, suggestion_id):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            c.execute('DELETE FROM suggestion WHERE id = ?', (suggestion_id,))
+            conn.commit()
+            return c.rowcount > 0
+
+    def get_suggestion(self, suggestion_id):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            c.execute('''
+                SELECT s.id, s.email, s.name, s.url, s.button, s.about, 
+                       st.name as site_type, s.client_ip, s.client_agent, 
+                       s.submitted_at, s.status
+                FROM suggestion s
+                LEFT JOIN site_type st ON s.type_id = st.id
+                WHERE s.id = ?
+            ''', (suggestion_id,))
+            row = c.fetchone()
+            if not row:
+                return None
+            return {
+                'id': row[0],
+                'email': row[1],
+                'name': row[2],
+                'url': row[3],
+                'button': row[4],
+                'about': row[5],
+                'type': row[6],
+                'client_ip': row[7],
+                'client_agent': row[8],
+                'submitted_at': row[9],
+                'status': row[10]
+            }
+
+    def approve_suggestion(self, suggestion_id):
+        """Одобряет заявку и создает сайт на ее основе"""
+        suggestion = self.get_suggestion(suggestion_id)
+        if not suggestion or suggestion['status'] != 'pending':
+            return False
+        
+        # Создаем сайт из заявки
+        site_id = self.add_site(
+            name=suggestion['name'],
+            button=suggestion['button'] or '',
+            about=suggestion['about'],
+            type_name=suggestion['type'],
+            urls=[('http', suggestion['url'])]  # По умолчанию http, можно добавить логику определения
+        )
+        
+        if site_id:
+            # Обновляем статус заявки
+            self.update_suggestion_status(suggestion_id, 'approved')
+            return site_id
+        return False
