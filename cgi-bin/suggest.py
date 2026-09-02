@@ -6,7 +6,6 @@ import codecs
 import os
 from pathlib import Path
 
-# Добавляем путь к lib
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from lib.database import SiteDatabase
 
@@ -16,35 +15,64 @@ form = cgi.FieldStorage()
 client_ip = os.environ.get("REMOTE_ADDR", "None")
 client_agent = os.environ.get('HTTP_USER_AGENT', 'Чудоюдо')
 
-# Получаем данные из формы
 email = form.getfirst("email", "")
 name = form.getfirst("name", "")
 url = form.getfirst("url", "")
 button = form.getfirst("button", "")
 about = form.getfirst("about", "")
-type_id = form.getfirst("type_id", "")
+type_id = form.getfirst("type_id", "0")
 
-# Проверка обязательных полей
-if not all([name, url, about, type_id]):
-    print("Content-type: text/html\n")
-    print("""<!DOCTYPE HTML>
+document="""
+<!DOCTYPE HTML>
         <html>
         <head>
             <meta charset="utf-8">
-            <title>Ошибка</title>
+            <title><!--TITLE--></title>
+<style>
+body {width:80ch; margin:auto;background-color:#FFF;color:#222;font-family:'Courier New',Courier,monospace;}
+p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16px;}
+pre {line-height:1}
+th {background-color:#888;color:#FFF}
+.ascii{font-size:70%;line-height:0.9;}
+.disabled{pointer-events:none;color: #888888;}
+a #cipher {text-decoration: none;height:28ch;}
+.footer{font-style:italic;margin-bottom: 2ch;}
+img{width:88px;height:31px;image-rendering:pixelated;}
+.name{vertical-align:top;text-align:center;}
+
+@media (max-width:770px) {
+body {width:auto;}
+p{margin-left: 5px;}
+.fr, .fc {display:none;}
+.art-table td, .art-table th {width:auto;}}
+@media (prefers-color-scheme: dark){
+body {background-color:#222;color:#FFF;}
+a {color:#4AF;}
+</style>
         </head>
         <body>
-            <h1>Ошибка: Заполните все обязательные поля</h1>
-            <p><a href="/suggest.html">Вернуться</a></p>
-        </body>
-        </html>""")
+</center>
+        <!--BODY-->
+</center>
+</body>
+</html>
+        
+"""
+
+
+print("Content-type: text/html\n")
+
+if not all([name, url, about]):
+    print("Content-type: text/html\n")
+    document=document.replace('<!--TITLE-->', 'Чего?', 1)
+    document=document.replace('<!--BODY-->', """<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
+                      <p><a href="/suggest.html">Вернуться</a></p>""", 1)
+    print(document)
     sys.exit()
 
 try:
-    # Инициализируем БД
     db = SiteDatabase(Path(__file__).parent.parent / 'db' / 'sites.db')
     
-    # Добавляем заявку в БД
     suggestion_id = db.add_suggestion(
         email=email,
         name=name,
@@ -56,32 +84,17 @@ try:
         client_agent=client_agent
     )
     
-    print("Content-type: text/html\n")
-    print("""<!DOCTYPE HTML>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Заявка отправлена</title>
-        </head>
-        <body>
-            <h1>Спасибо за заявку!</h1>
+    document=document.replace('<!--TITLE-->', 'Заявка отправлена', 1)
+    document=document.replace('<!--BODY-->', """<h1>Спасибо за заявку!</h1>
             <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
             Номер заявки: {}<br>
-            <a href="/">Вернуться на главную</a></p>
-        </body>
-        </html>""".format(suggestion_id))
-    
+            <a href="/">Вернуться на главную</a></p>""".format(suggestion_id), 1)
+
 except Exception as e:
-    print("Content-type: text/html\n")
-    print("""<!DOCTYPE HTML>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Ошибка</title>
-        </head>
-        <body>
-            <h1>Ой ей</h1>
+    document=document.replace('<!--TITLE-->', 'Заявка отправлена', 1)
+    document=document.replace('<!--BODY-->', """<h1>Ой ей</h1>
             <p>Попробуйте позже или свяжитесь с администратором. Эта штука не должна была так себя повести.<br>
             Ошибка: {}</p>
-        </body>
-        </html>""".format(str(e)))
+            <a href="/">Вернуться на главную</a></p>""".format(str(e)), 1)
+
+print(document)
