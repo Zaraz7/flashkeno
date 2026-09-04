@@ -22,12 +22,7 @@ button = form.getfirst("button", "")
 about = form.getfirst("about", "")
 type_id = form.getfirst("type_id", "0")
 
-document="""
-<!DOCTYPE HTML>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title><!--TITLE--></title>
+head_jaw="""</title>
 <style>
 body {width:80ch; margin:auto;background-color:#FFF;color:#222;font-family:'Courier New',Courier,monospace;}
 p, pre, code {margin:0;font-family:'Courier New',Courier,monospace;font-size:16px;}
@@ -51,23 +46,21 @@ a {color:#4AF;}
 </style>
         </head>
         <body>
-</center>
-        <!--BODY-->
-</center>
-</body>
-</html>
-        
-"""
+</center>"""
+html_end="</center></body></html>"
 
 
 print("Content-type: text/html\n")
+print("""<!DOCTYPE HTML>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>""", end='')
+
 
 if not all([name, url, about]):
-    print("Content-type: text/html\n")
-    document=document.replace('<!--TITLE-->', 'Чего?', 1)
-    document=document.replace('<!--BODY-->', """<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
-                      <p><a href="/suggest.html">Вернуться</a></p>""", 1)
-    print(document)
+    print('Чего чего?',head_jaw,"""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
+<p><a href="/suggest.html">Вернуться</a></p>""", html_end)
     sys.exit()
 
 try:
@@ -83,18 +76,15 @@ try:
         client_ip=client_ip,
         client_agent=client_agent
     )
-    
-    document=document.replace('<!--TITLE-->', 'Заявка отправлена', 1)
-    document=document.replace('<!--BODY-->', """<h1>Спасибо за заявку!</h1>
+    print('Заявка отправлена',head_jaw,"""
+          <h1>Спасибо за заявку!</h1>
             <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
-            Номер заявки: {}<br>
-            <a href="/">Вернуться на главную</a></p>""".format(suggestion_id), 1)
+            Номер заявки: """,suggestion_id)
 
 except Exception as e:
-    document=document.replace('<!--TITLE-->', 'Заявка отправлена', 1)
-    document=document.replace('<!--BODY-->', """<h1>Ой ей</h1>
+    print('Заявка отправлена',html_end,"""
+          <h1>Ой ей</h1>
             <p>Попробуйте позже или свяжитесь с администратором. Эта штука не должна была так себя повести.<br>
-            Ошибка: {}</p>
-            <a href="/">Вернуться на главную</a></p>""".format(str(e)), 1)
+            Ошибка: """,str(e))
 
-print(document)
+print(html_end, '<br><a href="/">Вернуться на главную</a></p>')
