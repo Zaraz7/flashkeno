@@ -60,7 +60,6 @@ def cmd_find(args):
         print(f"{s['id']:3d} | {s['type'] or '-':15} | {s['name']}")
 
 def cmd_suggestions_list(args):
-    """Показать список заявок"""
     status = args.status if hasattr(args, 'status') else None
     suggestions = db.get_suggestions(status)
     
@@ -74,7 +73,6 @@ def cmd_suggestions_list(args):
         print(f"{s['id']:4d} | {s['status']:10} | {s['name'][:20]:20} | {s['type'] or '-':15} | {s['url'][:30]:30} | {s['submitted_at'][:19]:20}")
 
 def cmd_suggestions_show(args):
-    """Показать подробную информацию о заявке"""
     suggestion = db.get_suggestion(args.id)
     if not suggestion:
         print(f'Suggestion {args.id} not found')
@@ -93,7 +91,6 @@ def cmd_suggestions_show(args):
     print(f"Дата подачи: {suggestion['submitted_at']}")
 
 def cmd_suggestions_approve(args):
-    """Одобрить заявку и создать сайт"""
     site_id = db.approve_suggestion(args.id)
     if site_id:
         print(f'Suggestion {args.id} approved, site created with ID: {site_id}')
@@ -101,14 +98,12 @@ def cmd_suggestions_approve(args):
         print(f'Cannot approve suggestion {args.id}')
 
 def cmd_suggestions_reject(args):
-    """Отклонить заявку (отправить в корзину)"""
     if db.update_suggestion_status(args.id, 'rejected'):
         print(f'Suggestion {args.id} rejected')
     else:
         print(f'Cannot reject suggestion {args.id}')
 
 def cmd_suggestions_delete(args):
-    """Удалить заявку"""
     if db.delete_suggestion(args.id):
         print(f'Suggestion {args.id} deleted')
     else:
@@ -117,17 +112,38 @@ def cmd_suggestions_delete(args):
 def main():
     p = argparse.ArgumentParser(prog='sitectl')
     sub = p.add_subparsers(dest='cmd')
-    a = sub.add_parser('list'); a.set_defaults(func=cmd_list)
+    a = sub.add_parser('list')
+    a.set_defaults(func=cmd_list)
 
-    a = sub.add_parser('add'); a.add_argument('--name', required=True); a.add_argument('--button'); a.add_argument('--about'); a.add_argument('--type', required=True); a.add_argument('--urls', nargs='*'); a.set_defaults(func=cmd_add)
+    a = sub.add_parser('add')
+    a.add_argument('--name', required=True)
+    a.add_argument('--button')
+    a.add_argument('--about')
+    a.add_argument('--type', required=True)
+    a.add_argument('--urls', nargs='*')
+    a.set_defaults(func=cmd_add)
 
-    a = sub.add_parser('edit'); a.add_argument('id', type=int); a.add_argument('--name'); a.add_argument('--button'); a.add_argument('--about'); a.add_argument('--type'); a.add_argument('--replace-urls', nargs='*'); a.set_defaults(func=cmd_edit)
+    a = sub.add_parser('edit')
+    a.add_argument('id', type=int)
+    a.add_argument('--name')
+    a.add_argument('--button')
+    a.add_argument('--about')
+    a.add_argument('--type')
+    a.add_argument('--replace-urls', nargs='*')
+    a.set_defaults(func=cmd_edit)
 
-    a = sub.add_parser('delete'); a.add_argument('id', type=int); a.set_defaults(func=cmd_delete)
+    a = sub.add_parser('delete')
+    a.add_argument('id', type=int)
+    a.set_defaults(func=cmd_delete)
 
-    a = sub.add_parser('move'); a.add_argument('id', type=int); a.add_argument('direction', choices=['up','down']); a.set_defaults(func=cmd_move)
+    a = sub.add_parser('move')
+    a.add_argument('id', type=int)
+    a.add_argument('direction', choices=['up','down'])
+    a.set_defaults(func=cmd_move)
 
-    a = sub.add_parser('find'); a.add_argument('query'); a.set_defaults(func=cmd_find)
+    a = sub.add_parser('find')
+    a.add_argument('query')
+    a.set_defaults(func=cmd_find)
 
     a = sub.add_parser('suggestions-list', help='List all suggestions')
     a.add_argument('--status', choices=['pending', 'approved', 'rejected'], help='Filter by status')
