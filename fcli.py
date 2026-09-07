@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 import argparse
 from lib.database import SiteDatabase
-import config
 from pathlib import Path
 
-db = SiteDatabase(Path(__file__).parent / 'db' / 'sites.db')
+PATH_DB = Path(__file__).parent / 'db' 
+db = SiteDatabase(PATH_DB / 'sites.db')
+
+def cmd_init(args):
+    if args.db:
+        import os
+        os.makedirs(PATH_DB, exist_ok=True)
+        db.init_database()
 
 def cmd_list(args):
     sites = db.get_all_sites()
@@ -112,6 +118,11 @@ def cmd_suggestions_delete(args):
 def main():
     p = argparse.ArgumentParser(prog='sitectl')
     sub = p.add_subparsers(dest='cmd')
+
+    a = sub.add_parser('init')
+    a.add_argument('--db', action='store_true')
+    a.set_defaults(func=cmd_init)
+
     a = sub.add_parser('list')
     a.set_defaults(func=cmd_list)
 
