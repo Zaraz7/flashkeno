@@ -5,5 +5,6 @@ __pycache__/
 # DB
 *.db
 # WEB
+/flashkeno/web/index.html
+/*.egg-info/
 /index.html
-/mail.html
