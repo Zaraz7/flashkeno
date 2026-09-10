@@ -2,9 +2,10 @@
 __pycache__/
 *.py[cod]
 *.pyo
+/*.egg-info/
+.venv
 # DB
 *.db
 # WEB
 /flashkeno/web/index.html
-/*.egg-info/
 /index.html
