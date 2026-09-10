@@ -4,6 +4,8 @@ import cgi
 import sys
 import codecs
 import os
+import traceback
+
 from pathlib import Path
 
 from flashkeno.lib.database import SiteDatabase
@@ -64,7 +66,7 @@ if not all([name, url, about]):
 
 try:
     db_path = Path(__file__).parent.parent.parent / 'db' / 'sites.db'
-    print(db_path)
+    #print(db_path)
     db = SiteDatabase(db_path)
     
     suggestion_id = db.add_suggestion(
@@ -83,9 +85,10 @@ try:
             Номер заявки: """,suggestion_id)
 
 except Exception as e:
-    print('Заявка отправлена',head_jaw,"""
+    print('Ошибочка',head_jaw,"""
           <h1>Ой ей</h1>
             <p>Попробуйте позже или свяжитесь с администратором. Эта штука не должна была так себя повести.<br>
             Ошибка: """,str(e))
+    traceback.print_exc()
 
 print(html_end, '<br><a href="/">Вернуться на главную</a></p>')
