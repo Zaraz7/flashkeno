@@ -2,15 +2,53 @@
 import argparse
 from flashkeno.lib.database import SiteDatabase
 from pathlib import Path
+import sys
 
 PATH_DB = Path(__file__).parent / 'db' 
 db = SiteDatabase(PATH_DB / 'sites.db')
+
+def edit_text_in_editor(initial_text=""):
+    import tempfile
+    import os
+    import subprocess
+    """Открыть системный текстовый редактор для редактирования текста"""
+    editor = os.environ.get('EDITOR', 'nano')
+    
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.txt', delete=False) as f:
+        f.write(initial_text)
+        temp_file = f.name
+    
+    try:
+        subprocess.run([editor, temp_file], check=True)
+        with open(temp_file, 'r') as f:
+            return f.read()
+    except subprocess.CalledProcessError:
+        print('Редактирование отменено')
+        return None
+    finally:
+        os.unlink(temp_file)
 
 def cmd_init(args):
     if args.db:
         import os
         os.makedirs(PATH_DB, exist_ok=True)
         db.init_database()
+    if args.html:
+        from flashkeno.lib.html_generator import HTMLGenerator
+        try:
+            template_path = 'templates/index.html'#sys.argv[1] if len(sys.argv) > 1 else '../templates/index.html'
+            output_path = 'web/index.html' #sys.argv[2] if len(sys.argv) > 2 else 'index.html'
+            
+            generator = HTMLGenerator(
+                db_path='db/sites.db',
+                template_path=template_path,
+                output_path=output_path
+            )
+            generator.generate_html()
+            
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
 
 def cmd_list(args):
     sites = db.get_all_sites()
@@ -47,6 +85,43 @@ def cmd_edit(args):
             urls.append((t, url))
         db.replace_urls(args.id, urls)
     print('Updated', args.id)
+
+def cmd_edit_interactive(args):
+    """Интерактивное редактирование сайта с редактором"""
+    site = db.get_site(args.id)
+    if not site:
+        print('Site not found')
+        return
+    
+    updates = {}
+    
+    if args.field == 'name':
+        new_value = edit_text_in_editor(site['name'])
+        if new_value is not None:
+            updates['name'] = new_value.strip()
+    elif args.field == 'button':
+        new_value = edit_text_in_editor(site.get('button') or '')
+        if new_value is not None:
+            updates['button'] = new_value.strip()
+    elif args.field == 'about':
+        new_value = edit_text_in_editor(site.get('about') or '')
+        if new_value is not None:
+            updates['about'] = new_value.strip()
+    elif args.field == 'type':
+        new_value = edit_text_in_editor(site.get('type') or '')
+        if new_value is not None:
+            updates['type_name'] = new_value.strip()
+    else:
+        print(f'Unknown field: {args.field}')
+        print('Available fields: name, button, about, type')
+        return
+    
+    if updates:
+        db.update_site(args.id, **updates)
+        print(f'Updated {args.id}: {args.field}')
+    else:
+        print('No changes made')
+
 
 def cmd_delete(args):
     if db.delete_site(args.id):
@@ -121,6 +196,7 @@ def main():
 
     a = sub.add_parser('init')
     a.add_argument('--db', action='store_true')
+    a.add_argument('--html', action='store_true')
     a.set_defaults(func=cmd_init)
 
     a = sub.add_parser('list')
@@ -143,6 +219,11 @@ def main():
     a.add_argument('--replace-urls', nargs='*')
     a.set_defaults(func=cmd_edit)
 
+    a = sub.add_parser('edit-text')
+    a.add_argument('id', type=int, help='Site ID')
+    a.add_argument('field', choices=['name', 'button', 'about', 'type'], help='Field to edit')
+    a.set_defaults(func=cmd_edit_interactive)
+
     a = sub.add_parser('delete')
     a.add_argument('id', type=int)
     a.set_defaults(func=cmd_delete)
@@ -156,25 +237,29 @@ def main():
     a.add_argument('query')
     a.set_defaults(func=cmd_find)
 
-    a = sub.add_parser('suggestions-list', help='List all suggestions')
+    suggestions_parser = sub.add_parser('suggestions', help='Manage suggestions')
+    suggestions_sub = suggestions_parser.add_subparsers(dest='suggestions_cmd')
+    
+    a = suggestions_sub.add_parser('list', help='List all suggestions')
     a.add_argument('--status', choices=['pending', 'approved', 'rejected'], help='Filter by status')
     a.set_defaults(func=cmd_suggestions_list)
     
-    a = sub.add_parser('suggestions-show', help='Show suggestion details')
+    a = suggestions_sub.add_parser('show', help='Show suggestion details')
     a.add_argument('id', type=int, help='Suggestion ID')
     a.set_defaults(func=cmd_suggestions_show)
     
-    a = sub.add_parser('suggestions-approve', help='Approve suggestion and create site')
+    a = suggestions_sub.add_parser('approve', help='Approve suggestion and create site')
     a.add_argument('id', type=int, help='Suggestion ID')
     a.set_defaults(func=cmd_suggestions_approve)
     
-    a = sub.add_parser('suggestions-reject', help='Reject suggestion (move to trash)')
+    a = suggestions_sub.add_parser('reject', help='Reject suggestion (move to trash)')
     a.add_argument('id', type=int, help='Suggestion ID')
     a.set_defaults(func=cmd_suggestions_reject)
     
-    a = sub.add_parser('suggestions-delete', help='Delete suggestion')
+    a = suggestions_sub.add_parser('delete', help='Delete suggestion')
     a.add_argument('id', type=int, help='Suggestion ID')
     a.set_defaults(func=cmd_suggestions_delete)
+
 
 
 
