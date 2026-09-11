@@ -273,15 +273,6 @@ class SiteDatabase:
     def add_suggestion(self, email, name, url, button, about, type_id, client_ip, client_agent):
         with self.get_connection() as conn:
             c = conn.cursor()
-            # хуня
-            # Получаем или создаем тип сайта
-            # c.execute('SELECT id FROM site_type WHERE name = ?', (type_name,))
-            # r = c.fetchone()
-            # if r:
-            #     type_id = r[0]
-            # else:
-            #     c.execute('INSERT INTO site_type (name) VALUES (?)', (type_name,))
-            #     type_id = c.lastrowid
             
             c.execute('''
                 INSERT INTO suggestion (email, name, url, button, about, type_id, client_ip, client_agent)

@@ -12,11 +12,11 @@ class HTMLGenerator:
     def generate_site_row(self, site, url_type="clearnet"):
         main_url = ''
         for url in site['urls']:
-            if url['type'] == 'clearnet':
+            if url['type'] == url_type:
                 main_url = url['url']
                 break
         if not main_url and site['urls']:
-            main_url = site['urls'][0]['url']
+            main_url = site['urls'][len(site['urls'])-1]['url']
         if site['button']:
             button_html = f'''<td class="name">
   <a href="{main_url}" target="_blank">
