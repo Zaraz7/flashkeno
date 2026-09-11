@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/home/villager/App/flashkeno/.venv/bin/python3
+##!/usr/bin/env python3
 
 import cgi
 import sys
