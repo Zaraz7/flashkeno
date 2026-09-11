@@ -1,11 +1,8 @@
 #!/bin/sh
-# Получаем абсолютный путь до каталога скрипта
 
 python fcli.py init --html || exit 1
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-
-# Переходим в эту директорию
 cd "$SCRIPT_DIR" || exit 1
 cd web
 
