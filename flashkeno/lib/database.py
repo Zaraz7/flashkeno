@@ -62,7 +62,7 @@ class SiteDatabase:
             conn.commit()
 
     def _init_default_data(self, cursor):
-        site_types = ['персональные сайты', 'соцсети', 'форумы']
+        site_types = ['персональные сайты', 'соцсети', 'форумы', 'другое']
         for t in site_types:
             cursor.execute('INSERT OR IGNORE INTO site_type (name) VALUES (?)', (t,))
         # TODO: ? Switch from "clearnet" to http, https
@@ -367,22 +367,20 @@ class SiteDatabase:
             }
 
     def approve_suggestion(self, suggestion_id):
-        """Одобряет заявку и создает сайт на ее основе"""
         suggestion = self.get_suggestion(suggestion_id)
         if not suggestion or suggestion['status'] != 'pending':
             return False
         
-        # Создаем сайт из заявки
         site_id = self.add_site(
             name=suggestion['name'],
             button=suggestion['button'] or '',
             about=suggestion['about'],
             type_name=suggestion['type'],
-            urls=[('http', suggestion['url'])]  # По умолчанию http, можно добавить логику определения
+            # TODO: Add network definition
+            urls=[('https', suggestion['url'])] 
         )
         
         if site_id:
-            # Обновляем статус заявки
             self.update_suggestion_status(suggestion_id, 'approved')
             return site_id
         return False
