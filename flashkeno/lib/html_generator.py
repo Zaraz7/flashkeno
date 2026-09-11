@@ -17,12 +17,17 @@ class HTMLGenerator:
                 break
         if not main_url and site['urls']:
             main_url = site['urls'][0]['url']
-        
-        button_html = f'''<td class="name">
+        if site['button']:
+            button_html = f'''<td class="name">
   <a href="{main_url}" target="_blank">
    <img src="img/b/{site['button']}" alt="{site['name']}">
   </a>
 </td>'''
+        else:
+            button_html = f'''<td class="name">
+  <a href="{main_url}" target="_blank">{site['name']}</a>
+</td>'''
+            
         about_html = f'''<td>
 {site['about']}<br>
 <small>Доступен по: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
