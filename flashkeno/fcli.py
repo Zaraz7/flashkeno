@@ -11,7 +11,6 @@ def edit_text_in_editor(initial_text=""):
     import tempfile
     import os
     import subprocess
-    """Открыть системный текстовый редактор для редактирования текста"""
     editor = os.environ.get('EDITOR', 'nano')
     
     with tempfile.NamedTemporaryFile(mode='w+', suffix='.txt', delete=False) as f:
@@ -23,7 +22,7 @@ def edit_text_in_editor(initial_text=""):
         with open(temp_file, 'r') as f:
             return f.read()
     except subprocess.CalledProcessError:
-        print('Редактирование отменено')
+        print('Abort editing')
         return None
     finally:
         os.unlink(temp_file)
@@ -58,6 +57,7 @@ def cmd_list(args):
     for s in sites:
         urls = ', '.join(f"{u['type']}={u['url']}" for u in s['urls'])
         print(f"{s['id']:3d} | {s.get('type') or '-':15} | {s['name']} | {s['button']} | {urls}")
+        print(s['about'])
 
 def cmd_add(args):
     urls = []
@@ -87,7 +87,6 @@ def cmd_edit(args):
     print('Updated', args.id)
 
 def cmd_edit_interactive(args):
-    """Интерактивное редактирование сайта с редактором"""
     site = db.get_site(args.id)
     if not site:
         print('Site not found')
@@ -237,7 +236,7 @@ def main():
     a.add_argument('query')
     a.set_defaults(func=cmd_find)
 
-    suggestions_parser = sub.add_parser('suggestions', help='Manage suggestions')
+    suggestions_parser = sub.add_parser('sugg', help='Manage suggestions')
     suggestions_sub = suggestions_parser.add_subparsers(dest='suggestions_cmd')
     
     a = suggestions_sub.add_parser('list', help='List all suggestions')
