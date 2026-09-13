@@ -366,7 +366,7 @@ class SiteDatabase:
             name=suggestion['name'],
             button=suggestion['button'] or '',
             about=suggestion['about'],
-            type_name=suggestion['type'],
+            type_name=suggestion['type'] or 'другое',
             # TODO: Add network definition
             urls=[('https', suggestion['url'])] 
         )
