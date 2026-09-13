@@ -1,5 +1,88 @@
 import sqlite3
 
+
+def parse_urls_from_text(urls_text):
+    from ipaddress import ip_address, AddressValueError
+    """
+    Преобразует текст с URLs (разделённых переносами строк) в список кортежей (тип, url).
+    
+    Типы определяются по следующим правилам:
+    - https:// → https
+    - http://*.i2p → i2p
+    - http://[IPv6] → yggdrasil
+    - http://*.{ygg,anon,btn,conf,index,merch,mirror,mob,screen,srv} → yggdrasil-alfis
+    - http://127.0.0.1:43110 → zeronet
+    - http:// (остальное) → http
+    - gemini:// → gemini
+    
+    Args:
+        urls_text: строка с URLs, разделённые переносами строк
+    
+    Returns:
+        список кортежей (тип, url)
+    """
+    if not urls_text:
+        return []
+    
+    urls = []
+    lines = urls_text.strip().split('\n')
+    yggdrasil_alfis_domains = {'.ygg', '.anon', '.btn', '.conf', '.index', '.merch', '.mirror', '.mob', '.screen', '.srv'}
+    
+    for line in lines:
+        url = line.strip()
+        if not url:
+            continue
+        
+        url_type = None
+        
+        # gemini://
+        if url.startswith('gemini://'):
+            url_type = 'gemini'
+        
+        # https://
+        elif url.startswith('https://'):
+            url_type = 'https'
+        
+        # http://
+        elif url.startswith('http://'):
+            # Извлекаем хост из URL
+            host_part = url[7:]  # Убираем 'http://'
+            
+            # Извлекаем хост (до первого / или :)
+            host = host_part.split('/')[0].split(':')[0]
+            
+            # Проверяем IPv6 (заключён в квадратные скобки или содержит :)
+            if host.startswith('[') or ':' in host:
+                try:
+                    # Если это валидный IPv6
+                    ip_address(host.strip('[]'))
+                    url_type = 'yggdrasil'
+                except (AddressValueError, ValueError):
+                    pass
+            
+            # Проверяем .i2p
+            if not url_type and host.lower().endswith('.i2p'):
+                url_type = 'i2p'
+            
+            # Проверяем zeronet
+            if not url_type and url.startswith('http://127.0.0.1:43110'):
+                url_type = 'zeronet'
+            
+            # Проверяем yggdrasil-alfis по доменам
+            if not url_type:
+                for domain in yggdrasil_alfis_domains:
+                    if host.lower().endswith(domain):
+                        url_type = 'yggdrasil-alfis'
+                        break
+            
+            # По умолчанию http
+            if not url_type:
+                url_type = 'http'
+        
+        if url_type:
+            urls.append((url_type, url))
+    
+    return urls
 class SiteDatabase:
     def __init__(self, db_path='sites.db'):
         self.db_path = db_path
@@ -59,6 +142,7 @@ class SiteDatabase:
                 )
             ''')
             self._init_default_data(c)
+            self.migrate_add_main_url()
             conn.commit()
 
     def _init_default_data(self, cursor):
@@ -66,11 +150,26 @@ class SiteDatabase:
         for t in site_types:
             cursor.execute('INSERT OR IGNORE INTO site_type (name) VALUES (?)', (t,))
         # TODO: ? Switch from "clearnet" to http, https
-        url_types = ['clearnet', 'yggdrasil', 'i2p', 'zeronet', 'gemini', 'http', 'https']
+        url_types = ['clearnet', 'yggdrasil', 'yggdrasil-alfis', 'i2p', 'zeronet', 'gemini', 'http', 'https']
         for t in url_types:
             cursor.execute('INSERT OR IGNORE INTO url_type (name) VALUES (?)', (t,))
 
-    def add_site(self, name, button, about, type_name, urls):
+    def migrate_add_main_url(self):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            try:
+                c.execute('''
+                    ALTER TABLE site ADD COLUMN main_url INTEGER 
+                    REFERENCES url(id) ON DELETE SET NULL
+                ''')
+                conn.commit()
+                print("Migration: main_url column added successfully")
+            except sqlite3.OperationalError as e:
+                if "duplicate column name" in str(e):
+                    print("Migration: main_url column already exists")
+                else:
+                    raise
+    def add_site(self, name, button, about, type_name, urls, main_url_id=None):
         with self.get_connection() as conn:
             c = conn.cursor()
             c.execute('SELECT id FROM site_type WHERE name = ?', (type_name,))
@@ -362,16 +461,38 @@ class SiteDatabase:
         if not suggestion or suggestion['status'] != 'pending':
             return False
         
+        # Преобразуем URLs из текста в список кортежей
+        urls = parse_urls_from_text(suggestion['url'])
+        
+        if not urls:
+            return False
+        
         site_id = self.add_site(
             name=suggestion['name'],
             button=suggestion['button'] or '',
             about=suggestion['about'],
             type_name=suggestion['type'] or 'другое',
-            # TODO: Add network definition
-            urls=[('https', suggestion['url'])] 
+            urls=urls
         )
         
         if site_id:
+            # Устанавливаем первый URL как главный
+            first_url_id = self._get_first_url_id(site_id)
+            if first_url_id:
+                self.set_main_url(site_id, first_url_id)
+            
             self.update_suggestion_status(suggestion_id, 'approved')
             return site_id
         return False
+    def _get_first_url_id(self, site_id):
+        """Получает ID первого URL для сайта (в порядке добавления)"""
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            c.execute('''
+                SELECT id FROM url 
+                WHERE site_id = ? 
+                ORDER BY id ASC 
+                LIMIT 1
+            ''', (site_id,))
+            row = c.fetchone()
+            return row[0] if row else None
