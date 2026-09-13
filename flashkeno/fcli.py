@@ -48,6 +48,8 @@ def cmd_init(args):
         except Exception as e:
             print(f"Error: {e}")
             sys.exit(1)
+    if args.migrate:
+        db.migrate_add_main_url()
 
 def cmd_list(args):
     sites = db.get_all_sites()
@@ -196,6 +198,7 @@ def main():
     a = sub.add_parser('init')
     a.add_argument('--db', action='store_true')
     a.add_argument('--html', action='store_true')
+    a.add_argument('--migrate', action='store_true')
     a.set_defaults(func=cmd_init)
 
     a = sub.add_parser('list')

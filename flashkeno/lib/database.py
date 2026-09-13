@@ -142,7 +142,6 @@ class SiteDatabase:
                 )
             ''')
             self._init_default_data(c)
-            self.migrate_add_main_url()
             conn.commit()
 
     def _init_default_data(self, cursor):
