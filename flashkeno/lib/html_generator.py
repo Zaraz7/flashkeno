@@ -20,7 +20,7 @@ class HTMLGenerator:
         if site['button']:
             button_html = f'''<td class="name">
   <a href="{main_url}" target="_blank">
-   <img src="img/b/{site['button']}" alt="{site['name']}">
+   <img src="img/b/{site['button']}" alt="{site['name']}" border="0">
   </a>
 </td>'''
         else:
