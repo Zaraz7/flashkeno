@@ -61,8 +61,10 @@ print("""<!DOCTYPE HTML>
 
 
 if not all([name, url, about]):
-    print('Чего чего?',head_jaw,"""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
-<p><a href="/suggest.html">Вернуться</a></p>""", html_end)
+    print('Чего чего?',head_jaw)
+    print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
+<p><a href="/suggest.html">Вернуться форме заявки</a></p>""")
+    print(html_end)
     sys.exit()
 
 try:
@@ -80,10 +82,11 @@ try:
         client_ip=client_ip,
         client_agent=client_agent
     )
-    print('Заявка отправлена',head_jaw,"""
-          <h1>Спасибо за заявку!</h1>
+    print('Заявка отправлена',head_jaw)
+    print("""<h1>Спасибо за заявку!</h1>
             <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
             Номер заявки: """,suggestion_id)
+    print('<br><a href="/suggest.html">Новая заявка</a>')
 
 except Exception as e:
     print('Ошибочка',head_jaw,"""
@@ -92,4 +95,4 @@ except Exception as e:
             Ошибка: """,str(e))
     traceback.print_exc()
 
-print(html_end, '<br><a href="/">Вернуться на главную</a></p>')
+print('<br><a href="/">Вернуться на главную</a></p>', html_end)
