@@ -308,7 +308,7 @@ class SiteDatabase:
             c.execute('SELECT id FROM url WHERE id = ?', (main_url_id,))
             if not c.fetchone():
                 return False
-            c.execute('UPDATE site SET main_url_id = ? WHERE id = ?', (main_url_id, site_id))
+            c.execute('UPDATE site SET main_url = ? WHERE id = ?', (main_url_id, site_id))
             conn.commit()
             return True
 
