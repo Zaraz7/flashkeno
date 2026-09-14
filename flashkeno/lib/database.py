@@ -299,6 +299,19 @@ class SiteDatabase:
                 c.execute('INSERT INTO url (site_id, type_id, url) VALUES (?, ?, ?)', (site_id, url_type_id, url))
             conn.commit()
             return True
+    def set_main_url(self, site_id, main_url_id):
+        with self.get_connection() as conn:
+            c = conn.cursor()
+            c.execute('SELECT id FROM site WHERE id = ?', (site_id,))
+            if not c.fetchone():
+                return False
+            c.execute('SELECT id FROM url WHERE id = ?', (main_url_id,))
+            if not c.fetchone():
+                return False
+            c.execute('UPDATE site SET main_url_id = ? WHERE id = ?', (main_url_id, site_id))
+            conn.commit()
+            return True
+
 
     def delete_site(self, site_id):
         with self.get_connection() as conn:
