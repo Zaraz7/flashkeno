@@ -145,7 +145,7 @@ class SiteDatabase:
             conn.commit()
 
     def _init_default_data(self, cursor):
-        site_types = ['персональные сайты', 'соцсети', 'форумы', 'другое']
+        site_types = ['персональные сайты', 'соцсети', 'форумы', 'библиотеки', 'другое']
         for t in site_types:
             cursor.execute('INSERT OR IGNORE INTO site_type (name) VALUES (?)', (t,))
         # TODO: ? Switch from "clearnet" to http, https
