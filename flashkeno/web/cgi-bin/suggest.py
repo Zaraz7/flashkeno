@@ -6,8 +6,9 @@ import sys
 import codecs
 import os
 import traceback
-
 from pathlib import Path
+
+print("Content-type: text/html\n")
 
 from flashkeno.lib.database import SiteDatabase
 
@@ -52,7 +53,7 @@ a {color:#4AF;}
 html_end="</center></body></html>"
 
 
-print("Content-type: text/html\n")
+
 print("""<!DOCTYPE HTML>
         <html>
         <head>
