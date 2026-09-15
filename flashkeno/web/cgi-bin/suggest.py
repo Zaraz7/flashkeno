@@ -90,8 +90,7 @@ try:
         print('<br><a href="/suggest.html">Новая заявка</a>')
 
 except Exception as e:
-    # Запись ошибки в файл для отладки
-    with open('/tmp/flashkeno_error.log', 'a') as log:
+    with open('~/flashkeno_error.log', 'a') as log:
         log.write(f"Error: {str(e)}\n")
         log.write(traceback.format_exc())
     
