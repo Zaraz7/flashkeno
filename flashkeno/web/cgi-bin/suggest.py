@@ -90,14 +90,14 @@ try:
         print('<br><a href="/suggest.html">Новая заявка</a>')
 
 except Exception as e:
-    with open('/home/villager/flashkeno_error.log', 'a') as log:
-        log.write(f"Error: {str(e)}\n")
-        log.write(traceback.format_exc())
-    
     print('Ошибочка',head_jaw,"""
           <h1>Ой ей</h1>
             <p>Попробуйте позже или свяжитесь с администратором.<br>
             Ошибка: """,str(e))
+    with open('/home/villager/flashkeno_error.log', 'a') as log:
+        log.write(f"Error: {str(e)}\n")
+        log.write(traceback.format_exc())
+    
     traceback.print_exc()
 
 print('<br><a href="/">Вернуться на главную</a></p>', html_end)
