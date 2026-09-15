@@ -1,26 +1,16 @@
 import sqlite3
 
-
 def parse_urls_from_text(urls_text):
+"""
+- https:// → https
+- http://*.i2p → i2p
+- http://[IPv6] → yggdrasil
+- http://*.{ygg,anon,btn,conf,index,merch,mirror,mob,screen,srv} → yggdrasil-alfis
+- http://127.0.0.1:43110 → zeronet
+- http:// (остальное) → http
+- gemini:// → gemini
+"""
     from ipaddress import ip_address, AddressValueError
-    """
-    Преобразует текст с URLs (разделённых переносами строк) в список кортежей (тип, url).
-    
-    Типы определяются по следующим правилам:
-    - https:// → https
-    - http://*.i2p → i2p
-    - http://[IPv6] → yggdrasil
-    - http://*.{ygg,anon,btn,conf,index,merch,mirror,mob,screen,srv} → yggdrasil-alfis
-    - http://127.0.0.1:43110 → zeronet
-    - http:// (остальное) → http
-    - gemini:// → gemini
-    
-    Args:
-        urls_text: строка с URLs, разделённые переносами строк
-    
-    Returns:
-        список кортежей (тип, url)
-    """
     if not urls_text:
         return []
     
@@ -34,51 +24,30 @@ def parse_urls_from_text(urls_text):
             continue
         
         url_type = None
-        
-        # gemini://
         if url.startswith('gemini://'):
             url_type = 'gemini'
-        
-        # https://
         elif url.startswith('https://'):
             url_type = 'https'
-        
-        # http://
         elif url.startswith('http://'):
-            # Извлекаем хост из URL
-            host_part = url[7:]  # Убираем 'http://'
-            
-            # Извлекаем хост (до первого / или :)
+            host_part = url[7:]
             host = host_part.split('/')[0].split(':')[0]
-            
-            # Проверяем IPv6 (заключён в квадратные скобки или содержит :)
             if host.startswith('[') or ':' in host:
                 try:
-                    # Если это валидный IPv6
                     ip_address(host.strip('[]'))
                     url_type = 'yggdrasil'
                 except (AddressValueError, ValueError):
                     pass
-            
-            # Проверяем .i2p
             if not url_type and host.lower().endswith('.i2p'):
                 url_type = 'i2p'
-            
-            # Проверяем zeronet
             if not url_type and url.startswith('http://127.0.0.1:43110'):
                 url_type = 'zeronet'
-            
-            # Проверяем yggdrasil-alfis по доменам
             if not url_type:
                 for domain in yggdrasil_alfis_domains:
                     if host.lower().endswith(domain):
                         url_type = 'yggdrasil-alfis'
                         break
-            
-            # По умолчанию http
             if not url_type:
                 url_type = 'http'
-        
         if url_type:
             urls.append((url_type, url))
     
@@ -94,51 +63,51 @@ class SiteDatabase:
         with self.get_connection() as conn:
             c = conn.cursor()
             c.execute('''
-                CREATE TABLE IF NOT EXISTS site_type (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT UNIQUE NOT NULL
+CREATE TABLE IF NOT EXISTS site_type (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL
                 )
             ''')
             c.execute('''
-                CREATE TABLE IF NOT EXISTS site (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    button TEXT NOT NULL,
-                    about TEXT,
-                    type_id INTEGER,
-                    FOREIGN KEY (type_id) REFERENCES site_type(id)
+CREATE TABLE IF NOT EXISTS site (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    button TEXT NOT NULL,
+    about TEXT,
+    type_id INTEGER,
+    FOREIGN KEY (type_id) REFERENCES site_type(id)
                 )
             ''')
             c.execute('''
-                CREATE TABLE IF NOT EXISTS url_type (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT UNIQUE NOT NULL
+CREATE TABLE IF NOT EXISTS url_type (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL
                 )
             ''')
             c.execute('''
-                CREATE TABLE IF NOT EXISTS url (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    site_id INTEGER NOT NULL,
-                    type_id INTEGER NOT NULL,
-                    url TEXT NOT NULL,
-                    FOREIGN KEY (site_id) REFERENCES site(id) ON DELETE CASCADE,
-                    FOREIGN KEY (type_id) REFERENCES url_type(id)
+CREATE TABLE IF NOT EXISTS url (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    site_id INTEGER NOT NULL,
+    type_id INTEGER NOT NULL,
+    url TEXT NOT NULL,
+    FOREIGN KEY (site_id) REFERENCES site(id) ON DELETE CASCADE,
+    FOREIGN KEY (type_id) REFERENCES url_type(id)
                 )
             ''')
             c.execute('''
-                CREATE TABLE IF NOT EXISTS suggestion (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    email TEXT,
-                    name TEXT NOT NULL,
-                    url TEXT NOT NULL,
-                    button TEXT,
-                    about TEXT,
-                    type_id INTEGER,
-                    client_ip TEXT,
-                    client_agent TEXT,
-                    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    status TEXT DEFAULT 'pending',
-                    FOREIGN KEY (type_id) REFERENCES site_type(id)
+CREATE TABLE IF NOT EXISTS suggestion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT,
+    name TEXT NOT NULL,
+    url TEXT NOT NULL,
+    button TEXT,
+    about TEXT,
+    type_id INTEGER,
+    client_ip TEXT,
+    client_agent TEXT,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'pending',
+    FOREIGN KEY (type_id) REFERENCES site_type(id)
                 )
             ''')
             self._init_default_data(c)
@@ -158,8 +127,8 @@ class SiteDatabase:
             c = conn.cursor()
             try:
                 c.execute('''
-                    ALTER TABLE site ADD COLUMN main_url INTEGER 
-                    REFERENCES url(id) ON DELETE SET NULL
+ALTER TABLE site ADD COLUMN main_url INTEGER 
+REFERENCES url(id) ON DELETE SET NULL
                 ''')
                 conn.commit()
                 print("Migration: main_url column added successfully")
@@ -201,14 +170,14 @@ class SiteDatabase:
         with self.get_connection() as conn:
             c = conn.cursor()
             c.execute('''
-                SELECT s.id, s.name, s.button, s.about, st.name as site_type,
-                       GROUP_CONCAT(ut.name || ':' || u.url, '|') as urls
-                FROM site s
-                LEFT JOIN site_type st ON s.type_id = st.id
-                LEFT JOIN url u ON s.id = u.site_id
-                LEFT JOIN url_type ut ON u.type_id = ut.id
-                GROUP BY s.id
-                ORDER BY st.id, s.id
+SELECT s.id, s.name, s.button, s.about, st.name as site_type,
+       GROUP_CONCAT(ut.name || ':' || u.url, '|') as urls
+FROM site s
+LEFT JOIN site_type st ON s.type_id = st.id
+LEFT JOIN url u ON s.id = u.site_id
+LEFT JOIN url_type ut ON u.type_id = ut.id
+GROUP BY s.id
+ORDER BY st.id, s.id
             ''')
             sites = []
             for row in c.fetchall():
@@ -239,14 +208,14 @@ class SiteDatabase:
             if not c.fetchone():
                 return None
             c.execute('''
-                SELECT s.id, s.name, s.button, s.about, st.name as site_type,
-                       GROUP_CONCAT(ut.name || ':' || u.url, '|') as urls
-                FROM site s
-                LEFT JOIN site_type st ON s.type_id = st.id
-                LEFT JOIN url u ON s.id = u.site_id
-                LEFT JOIN url_type ut ON u.type_id = ut.id
-                WHERE s.id = ?
-                GROUP BY s.id
+SELECT s.id, s.name, s.button, s.about, st.name as site_type,
+       GROUP_CONCAT(ut.name || ':' || u.url, '|') as urls
+FROM site s
+LEFT JOIN site_type st ON s.type_id = st.id
+LEFT JOIN url u ON s.id = u.site_id
+LEFT JOIN url_type ut ON u.type_id = ut.id
+WHERE s.id = ?
+GROUP BY s.id
             ''', (site_id,))
             row = c.fetchone()
             site = {'id': row[0], 'name': row[1], 'button': row[2], 'about': row[3],
@@ -373,11 +342,11 @@ class SiteDatabase:
             c = conn.cursor()
             q = f'%{query}%'
             c.execute('''
-                SELECT s.id, s.name, s.button, s.about, st.name as site_type
-                FROM site s
-                LEFT JOIN site_type st ON s.type_id = st.id
-                WHERE s.name LIKE ? OR s.about LIKE ?
-                ORDER BY s.id
+SELECT s.id, s.name, s.button, s.about, st.name as site_type
+FROM site s
+LEFT JOIN site_type st ON s.type_id = st.id
+WHERE s.name LIKE ? OR s.about LIKE ?
+ORDER BY s.id
             ''', (q, q))
             return [{'id': r[0], 'name': r[1], 'button': r[2], 'about': r[3], 'type': r[4], 'position': r[5]} for r in c.fetchall()]
 
@@ -386,8 +355,8 @@ class SiteDatabase:
             c = conn.cursor()
             
             c.execute('''
-                INSERT INTO suggestion (email, name, url, button, about, type_id, client_ip, client_agent)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO suggestion (email, name, url, button, about, type_id, client_ip, client_agent)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''', (email, name, url, button, about, type_id, client_ip, client_agent))
             conn.commit()
             return c.lastrowid
@@ -396,11 +365,11 @@ class SiteDatabase:
         with self.get_connection() as conn:
             c = conn.cursor()
             query = '''
-                SELECT s.id, s.email, s.name, s.url, s.button, s.about, 
-                       st.name as site_type, s.client_ip, s.client_agent, 
-                       s.submitted_at, s.status
-                FROM suggestion s
-                LEFT JOIN site_type st ON s.type_id = st.id
+SELECT s.id, s.email, s.name, s.url, s.button, s.about, 
+       st.name as site_type, s.client_ip, s.client_agent, 
+       s.submitted_at, s.status
+FROM suggestion s
+LEFT JOIN site_type st ON s.type_id = st.id
             '''
             params = []
             if status:
@@ -444,12 +413,12 @@ class SiteDatabase:
         with self.get_connection() as conn:
             c = conn.cursor()
             c.execute('''
-                SELECT s.id, s.email, s.name, s.url, s.button, s.about, 
-                       st.name as site_type, s.client_ip, s.client_agent, 
-                       s.submitted_at, s.status
-                FROM suggestion s
-                LEFT JOIN site_type st ON s.type_id = st.id
-                WHERE s.id = ?
+SELECT s.id, s.email, s.name, s.url, s.button, s.about, 
+       st.name as site_type, s.client_ip, s.client_agent, 
+       s.submitted_at, s.status
+FROM suggestion s
+LEFT JOIN site_type st ON s.type_id = st.id
+WHERE s.id = ?
             ''', (suggestion_id,))
             row = c.fetchone()
             if not row:
@@ -473,7 +442,6 @@ class SiteDatabase:
         if not suggestion or suggestion['status'] != 'pending':
             return False
         
-        # Преобразуем URLs из текста в список кортежей
         urls = parse_urls_from_text(suggestion['url'])
         
         if not urls:
@@ -488,7 +456,6 @@ class SiteDatabase:
         )
         
         if site_id:
-            # Устанавливаем первый URL как главный
             first_url_id = self._get_first_url_id(site_id)
             if first_url_id:
                 self.set_main_url(site_id, first_url_id)
@@ -497,14 +464,10 @@ class SiteDatabase:
             return site_id
         return False
     def _get_first_url_id(self, site_id):
-        """Получает ID первого URL для сайта (в порядке добавления)"""
         with self.get_connection() as conn:
             c = conn.cursor()
             c.execute('''
-                SELECT id FROM url 
-                WHERE site_id = ? 
-                ORDER BY id ASC 
-                LIMIT 1
+            SELECT id FROM url WHERE site_id = ? ORDER BY id ASC LIMIT 1
             ''', (site_id,))
             row = c.fetchone()
             return row[0] if row else None
