@@ -10,20 +10,7 @@ from pathlib import Path
 
 print("Content-type: text/html\n")
 
-from flashkeno.lib.database import SiteDatabase
 
-sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
-form = cgi.FieldStorage()
-
-client_ip = os.environ.get("REMOTE_ADDR", "None")
-client_agent = os.environ.get('HTTP_USER_AGENT', 'Чудоюдо')
-
-email = form.getfirst("email", "")
-name = form.getfirst("name", "")
-url = form.getfirst("url", "")
-button = form.getfirst("button", "")
-about = form.getfirst("about", "")
-type_id = form.getfirst("type_id", "0")
 
 head_jaw="""</title>
 <style>
@@ -51,48 +38,66 @@ a {color:#4AF;}
         <body>
 </center>"""
 html_end="</center></body></html>"
-
-
-
-print("""<!DOCTYPE HTML>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>""", end='')
-
-
-if not all([name, url, about]):
-    print('Чего чего?',head_jaw)
-    print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
-<p><a href="/suggest.html">Вернуться форме заявки</a></p>""")
-    print(html_end)
-    sys.exit()
-
 try:
-    db_path = Path(__file__).parent.parent.parent / 'db' / 'sites.db'
-    #print(db_path)
-    db = SiteDatabase(db_path)
-    
-    suggestion_id = db.add_suggestion(
-        email=email,
-        name=name,
-        url=url,
-        button=button,
-        about=about,
-        type_id=type_id,
-        client_ip=client_ip,
-        client_agent=client_agent
-    )
-    print('Заявка отправлена',head_jaw)
-    print("""<h1>Спасибо за заявку!</h1>
-            <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
-            Номер заявки: """,suggestion_id)
-    print('<br><a href="/suggest.html">Новая заявка</a>')
+
+    from flashkeno.lib.database import SiteDatabase
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+    form = cgi.FieldStorage()
+
+    client_ip = os.environ.get("REMOTE_ADDR", "None")
+    client_agent = os.environ.get('HTTP_USER_AGENT', 'Чудоюдо')
+
+    email = form.getfirst("email", "")
+    name = form.getfirst("name", "")
+    url = form.getfirst("url", "")
+    button = form.getfirst("button", "")
+    about = form.getfirst("about", "")
+    type_id = form.getfirst("type_id", "0")
+    print("""<!DOCTYPE HTML>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>""", end='')
+
+
+    if not all([name, url, about]):
+        print('Чего чего?',head_jaw)
+        print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
+    <p><a href="/suggest.html">Вернуться форме заявки</a></p>""")
+        print(html_end)
+        sys.exit()
+
+
+        db_path = Path(__file__).parent.parent.parent / 'db' / 'sites.db'
+        #print(db_path)
+        db = SiteDatabase(db_path)
+        
+        suggestion_id = db.add_suggestion(
+            email=email,
+            name=name,
+            url=url,
+            button=button,
+            about=about,
+            type_id=type_id,
+            client_ip=client_ip,
+            client_agent=client_agent
+        )
+        print('Заявка отправлена',head_jaw)
+        print("""<h1>Спасибо за заявку!</h1>
+                <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
+                Номер заявки: """,suggestion_id)
+        print('<br><a href="/suggest.html">Новая заявка</a>')
 
 except Exception as e:
+    # Запись ошибки в файл для отладки
+    with open('/tmp/flashkeno_error.log', 'a') as log:
+        log.write(f"Error: {str(e)}\n")
+        log.write(traceback.format_exc())
+    
     print('Ошибочка',head_jaw,"""
           <h1>Ой ей</h1>
-            <p>Попробуйте позже или свяжитесь с администратором. Эта штука не должна была так себя повести.<br>
+            <p>Попробуйте позже или свяжитесь с администратором.<br>
             Ошибка: """,str(e))
     traceback.print_exc()
 
