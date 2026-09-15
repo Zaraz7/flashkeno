@@ -2,15 +2,6 @@ import sqlite3
 from ipaddress import ip_address, AddressValueError
 
 def parse_urls_from_text(urls_text):
-    """
-    - https:// → https
-    - http://*.i2p → i2p
-    - http://[IPv6] → yggdrasil
-    - http://*.{ygg,anon,btn,conf,index,merch,mirror,mob,screen,srv} → yggdrasil-alfis
-    - http://127.0.0.1:43110 → zeronet
-    - http:// (остальное) → http
-    - gemini:// → gemini
-    """
     if not urls_text:
         return []
     
