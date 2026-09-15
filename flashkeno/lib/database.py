@@ -1,4 +1,5 @@
 import sqlite3
+from ipaddress import ip_address, AddressValueError
 
 def parse_urls_from_text(urls_text):
     """
@@ -10,7 +11,6 @@ def parse_urls_from_text(urls_text):
     - http:// (остальное) → http
     - gemini:// → gemini
     """
-    from ipaddress import ip_address, AddressValueError
     if not urls_text:
         return []
     
