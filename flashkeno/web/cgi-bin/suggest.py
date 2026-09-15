@@ -39,7 +39,11 @@ a {color:#4AF;}
 </center>"""
 html_end="</center></body></html>"
 try:
-
+    print("""<!DOCTYPE HTML>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>""", end='')
     from flashkeno.lib.database import SiteDatabase
 
     sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
@@ -54,11 +58,7 @@ try:
     button = form.getfirst("button", "")
     about = form.getfirst("about", "")
     type_id = form.getfirst("type_id", "0")
-    print("""<!DOCTYPE HTML>
-            <html>
-            <head>
-                <meta charset="utf-8">
-                <title>""", end='')
+
 
 
     if not all([name, url, about]):
