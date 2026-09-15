@@ -48,9 +48,9 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
                 <head>
                     <meta charset="utf-8">
                     <title>""", end='')
-        log.write('Trying import flashkeno.lib.database')
+        log.write('\nTrying import flashkeno.lib.database\n')
         from flashkeno.lib.database import SiteDatabase
-        log.write('Trying change codecs')
+        log.write('Trying change codecs\n')
         sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
         form = cgi.FieldStorage()
 
@@ -67,6 +67,7 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
 
 
         if not all([name, url, about]):
+            log.write('Not all entrys\n')
             print('Чего чего?',head_jaw)
             print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
         <p><a href="/suggest.html">Вернуться форме заявки</a></p>""")
@@ -74,26 +75,27 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
             sys.exit()
 
 
-            db_path = Path(__file__).parent.parent.parent / 'db' / 'sites.db'
-            #print(db_path)
-            log.write(db_path)
-            db = SiteDatabase(db_path)
-            
-            suggestion_id = db.add_suggestion(
-                email=email,
-                name=name,
-                url=url,
-                button=button,
-                about=about,
-                type_id=type_id,
-                client_ip=client_ip,
-                client_agent=client_agent
-            )
-            print('Заявка отправлена',head_jaw)
-            print("""<h1>Спасибо за заявку!</h1>
-                    <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
-                    Номер заявки: """,suggestion_id)
-            print('<br><a href="/suggest.html">Новая заявка</a>')
+        db_path = Path(__file__).parent.parent.parent / 'db' / 'sites.db'
+        #print(db_path)
+        log.write(db_path,'\n')
+        db = SiteDatabase(db_path)
+        log.write('db object created\n')
+        
+        suggestion_id = db.add_suggestion(
+            email=email,
+            name=name,
+            url=url,
+            button=button,
+            about=about,
+            type_id=type_id,
+            client_ip=client_ip,
+            client_agent=client_agent
+        )
+        print('Заявка отправлена',head_jaw)
+        print("""<h1>Спасибо за заявку!</h1>
+                <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
+                Номер заявки: """,suggestion_id)
+        print('<br><a href="/suggest.html">Новая заявка</a>')
 
     except Exception as e:
         log.write(f"Error: {str(e)}\n")
