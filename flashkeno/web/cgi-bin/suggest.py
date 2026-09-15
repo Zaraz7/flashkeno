@@ -77,7 +77,7 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
 
         db_path = Path(__file__).parent.parent.parent / 'db' / 'sites.db'
         #print(db_path)
-        log.write(db_path,'\n')
+        log.write(f'{db_path}\n')
         db = SiteDatabase(db_path)
         log.write('db object created\n')
         
