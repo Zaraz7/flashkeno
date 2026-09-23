@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from flashkeno.lib.database import SiteDatabase
+from flashkeno.lib.database import SiteDatabase, parse_urls_from_text
 from pathlib import Path
 import sys
 
@@ -35,8 +35,8 @@ def cmd_init(args):
     if args.html:
         from flashkeno.lib.html_generator import HTMLGenerator
         try:
-            template_path = 'templates/index.html'#sys.argv[1] if len(sys.argv) > 1 else '../templates/index.html'
-            output_path = 'web/index.html' #sys.argv[2] if len(sys.argv) > 2 else 'index.html'
+            template_path = 'templates/index.html'
+            output_path = 'web/index.html'
             
             generator = HTMLGenerator(
                 db_path='db/sites.db',
@@ -112,9 +112,22 @@ def cmd_edit_interactive(args):
         new_value = edit_text_in_editor(site.get('type') or '')
         if new_value is not None:
             updates['type_name'] = new_value.strip()
+    elif args.field == 'urls':
+        # Форматируем текущие URL для редактора (одна ссылка на строку)
+        urls_text = '\n'.join(u['url'] for u in site['urls'])
+        new_urls_text = edit_text_in_editor(urls_text)
+        if new_urls_text is not None:
+            # Парсим текст обратно в список URL
+            urls = parse_urls_from_text(new_urls_text)
+            if urls:
+                db.replace_urls(args.id, urls)
+                print(f'Updated {args.id}: urls')
+            else:
+                print('No valid URLs found')
+            return
     else:
         print(f'Unknown field: {args.field}')
-        print('Available fields: name, button, about, type')
+        print('Available fields: name, button, about, type, urls')
         return
     
     if updates:
@@ -223,7 +236,7 @@ def main():
 
     a = sub.add_parser('edit-text')
     a.add_argument('id', type=int, help='Site ID')
-    a.add_argument('field', choices=['name', 'button', 'about', 'type'], help='Field to edit')
+    a.add_argument('field', choices=['name', 'button', 'about', 'type', 'urls'], help='Field to edit')
     a.set_defaults(func=cmd_edit_interactive)
 
     a = sub.add_parser('delete')
