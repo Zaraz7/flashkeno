@@ -113,7 +113,7 @@ def cmd_edit_interactive(args):
         if new_value is not None:
             updates['type_name'] = new_value.strip()
     elif args.field == 'urls':
-        print("site['urls'][0]['url'] = ", site['urls'][0]['url'])
+        print("site['urls'] = ", site['urls'])
         urls_text = '\n'.join(u['url'] for u in site['urls'])
         print("urls_text =\n", urls_text)
         new_urls_text = edit_text_in_editor(urls_text)
