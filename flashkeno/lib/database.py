@@ -211,7 +211,7 @@ GROUP BY s.id
             row = c.fetchone()
             site = {'id': row[0], 'name': row[1], 'button': row[2], 'about': row[3],
                     'type': row[4], 'urls': []}
-            if len(row) > 6 and row[6]:
+            if len(row) > 5 and row[5]:
                 print("row[6]= ",row[6])
                 for url_item in row[6].split('|'):
                     typ, url = url_item.split(':', 1)
