@@ -328,7 +328,7 @@ GROUP BY s.id
                 conn.rollback()
                 raise
 
-
+    # ERROR: not working cause "IndexError: tuple index out of range"
     def find_sites(self, query):
         with self.get_connection() as conn:
             c = conn.cursor()
@@ -340,7 +340,7 @@ LEFT JOIN site_type st ON s.type_id = st.id
 WHERE s.name LIKE ? OR s.about LIKE ?
 ORDER BY s.id
             ''', (q, q))
-            return [{'id': r[0], 'name': r[1], 'button': r[2], 'about': r[3], 'type': r[4], 'position': r[5]} for r in c.fetchall()]
+            return [{'id': r[0], 'name': r[1], 'button': r[2], 'about': r[3], 'type': r[4]} for r in c.fetchall()]
 
     def add_suggestion(self, email, name, url, button, about, type_id, client_ip, client_agent):
         with self.get_connection() as conn:
