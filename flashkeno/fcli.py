@@ -113,11 +113,11 @@ def cmd_edit_interactive(args):
         if new_value is not None:
             updates['type_name'] = new_value.strip()
     elif args.field == 'urls':
-        # Форматируем текущие URL для редактора (одна ссылка на строку)
+        print("site['urls'][0]['url'] = ", site['urls'][0]['url'])
         urls_text = '\n'.join(u['url'] for u in site['urls'])
+        print("urls_text =\n", urls_text)
         new_urls_text = edit_text_in_editor(urls_text)
         if new_urls_text is not None:
-            # Парсим текст обратно в список URL
             urls = parse_urls_from_text(new_urls_text)
             if urls:
                 db.replace_urls(args.id, urls)
