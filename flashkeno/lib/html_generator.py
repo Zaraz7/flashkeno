@@ -32,7 +32,7 @@ class HTMLGenerator:
 {site['about']}<br>
 <small>Доступен по: {', '.join([f'<a href="{u["url"]}" target="_blank">{u["type"]}</a>' for u in site['urls']])}</small>
 </td>'''
-        return f'<tr>\n{button_html}\n{about_html}\n</tr>'
+        return f'<tr id="{site['id']}">\n{button_html}\n{about_html}\n</tr>'
     def get_table_rows(self):
         grouped_sites = self.db.get_sites_by_type()
         table_content = []
