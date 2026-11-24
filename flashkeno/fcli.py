@@ -205,12 +205,10 @@ def cmd_suggestions_delete(args):
         print(f'Cannot delete suggestion {args.id}')
 
 def cmd_backup(args):
-    from datetime import datetime
     if args.output:
         out_path = Path(args.output)
     else:
-        ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-        out_path = Path(__file__).parent / 'backups' / f'sites_backup_{ts}.json'
+        out_path = Path(__file__).parent / 'db' / f'sites_backup.json'
 
     sites_count, urls_count = db.backup_sites(out_path)
     print(f'Backup saved to {out_path} ({sites_count} sites, {urls_count} urls)')
