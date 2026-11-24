@@ -1,0 +1,570 @@
+{
+  "version": 1,
+  "created_at": "2026-11-24T09:03:23",
+  "site_types": [
+    {
+      "id": 1,
+      "name": "персональные сайты"
+    },
+    {
+      "id": 2,
+      "name": "соцсети"
+    },
+    {
+      "id": 3,
+      "name": "форумы"
+    },
+    {
+      "id": 157,
+      "name": "другое"
+    },
+    {
+      "id": 165,
+      "name": "библиотеки"
+    },
+    {
+      "id": 167,
+      "name": "другие каталоги и веб-кольца"
+    }
+  ],
+  "url_types": [
+    {
+      "id": 1,
+      "name": "clearnet"
+    },
+    {
+      "id": 2,
+      "name": "yggdrasil"
+    },
+    {
+      "id": 3,
+      "name": "i2p"
+    },
+    {
+      "id": 4,
+      "name": "zeronet"
+    },
+    {
+      "id": 5,
+      "name": "gemini"
+    },
+    {
+      "id": 256,
+      "name": "http"
+    },
+    {
+      "id": 257,
+      "name": "https"
+    },
+    {
+      "id": 274,
+      "name": "yggdrasil-alfis"
+    },
+    {
+      "id": 280,
+      "name": "onion"
+    }
+  ],
+  "sites": [
+    {
+      "id": 1,
+      "name": "Ockolus",
+      "button": "Гифка с Gifius.ru (1).gif",
+      "about": "Сайт не имеет конкретной направленности, это просто поток идей и сознания, который бесконечно стремится к конечной идее. Рада всем, постараюсь в дальнейшем на сайт выкладывать туториалы, мысли, и ресурсы для разработчика",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 2,
+      "name": "Форум народ",
+      "button": "narodf.gif",
+      "about": "Пользоваться форумом имеют право все желающие, в том числе и на тематику, даже не по теме <a href=\"http://w10.host\" target=\"_blank\" title=\"Web 1.0 hosting\">хостинга</a>, в соответствующих разделах. Давайте возродим форумы, как полезное средство обмена информацией и интересного времяпровождения.",
+      "type_id": 3,
+      "main_url": null
+    },
+    {
+      "id": 3,
+      "name": "RetroShow",
+      "button": "retroshow.gif",
+      "about": "Небольшой видеохостинг, который стилизован под YouTube образца августа 2005 года",
+      "type_id": 2,
+      "main_url": null
+    },
+    {
+      "id": 4,
+      "name": "LainLife",
+      "button": "lainlife.gif",
+      "about": "Первый инстанс OpenVK в Yggdrasil. Проект с открытым исходным кодом, воспроизводящий интерфейс и функционал «ВКонтакте» конца 2000‑х годов",
+      "type_id": 2,
+      "main_url": null
+    },
+    {
+      "id": 5,
+      "name": "LuxFero",
+      "button": "lux_fero.gif",
+      "about": "Персональный сайт с блогом на свободную тему, творчеством разных форматов и полным списком всего что я [смотрел/читал/играл] с  начала 2026 и всё это на двух языках",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 6,
+      "name": "VCFG Softworks",
+      "button": "vcfg2.gif",
+      "about": "Сайт фирмы \"VCFG Softworks\" на котором можно узнать новости.",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 7,
+      "name": "Lorel",
+      "button": "",
+      "about": "Персональная страница Лореля",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 8,
+      "name": "вселенская большая любовь 2",
+      "button": "vobla2.png",
+      "about": "Личный сайт со всяким разным (в том числе фототворчеством)",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 9,
+      "name": "Yureki's Booru",
+      "button": "yureki_booru.png",
+      "about": "Сайт галерея картинок работающий на базе Shimmie2.",
+      "type_id": 3,
+      "main_url": null
+    },
+    {
+      "id": 10,
+      "name": "Downgrade Network",
+      "button": "downgrade.gif",
+      "about": "Портал для старых браузеров с множеством сервисов для создателей ретро- и инди-сайтов.",
+      "type_id": 3,
+      "main_url": null
+    },
+    {
+      "id": 11,
+      "name": "Цифровой садик",
+      "button": "",
+      "about": "Личный цифровой садик - набор заметок на разные темы, постепенно дорабатываемых и увеличивающихся в количестве.",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 12,
+      "name": "Личный сайт Тиорина Хабарова",
+      "button": "khabarov.png",
+      "about": "Личный сайт Тиорина Хабарова",
+      "type_id": 1,
+      "main_url": null
+    },
+    {
+      "id": 13,
+      "name": "<small>ВХабаре.ру</small>",
+      "button": "",
+      "about": "пока по https работает медленно, надо по http заходить .. :)",
+      "type_id": 2,
+      "main_url": null
+    },
+    {
+      "id": 16,
+      "name": "ДЖИНС",
+      "button": "",
+      "about": "Сайт посвящен в большинстве своем ретро и довнгрейд тематике, я очень надеюсь что вы найдете его полезным, и интересным. Приятного просмотра ;)",
+      "type_id": 1,
+      "main_url": 45
+    },
+    {
+      "id": 17,
+      "name": "ГОВНОСАЙТ",
+      "button": "site.png",
+      "about": "Юмор и ирония о том как не надо делать сайты",
+      "type_id": 1,
+      "main_url": 46
+    },
+    {
+      "id": 18,
+      "name": "БУХАЯ КНИГА",
+      "button": "",
+      "about": "Неприличные истории из жизни ненастоящего человека",
+      "type_id": 165,
+      "main_url": 47
+    },
+    {
+      "id": 19,
+      "name": "Library",
+      "button": "",
+      "about": "Это электронная библиотека, в которой будет собрана техническая литература по различным направлениям: программирование, радиотехника, операционные системы и многое другое, все книги доступны к скачиванию, добро пожаловать!",
+      "type_id": 165,
+      "main_url": 59
+    },
+    {
+      "id": 20,
+      "name": "Фелис Тачикава",
+      "button": "Felice.gif",
+      "about": "Здесь я показываю мою жизнь, мои глаза и мои обстоятельства.",
+      "type_id": 1,
+      "main_url": 63
+    },
+    {
+      "id": 21,
+      "name": "lain.in.net",
+      "button": "lainin.png",
+      "about": "Небольшой, но активный Форум посвященный Lain. Можно общатьтся на любые темы.",
+      "type_id": 3,
+      "main_url": 71
+    },
+    {
+      "id": 22,
+      "name": "lain.moscow",
+      "button": "lainmoscow.png",
+      "about": "Личная страница без чёткой направленности, содержит блог и несколько проектов и сервисов. Доступен в clearnet, i2p и yggdrasil",
+      "type_id": 1,
+      "main_url": 72
+    },
+    {
+      "id": 23,
+      "name": "Rattka",
+      "button": "",
+      "about": "Художник/мыслитель/просто хороший человек",
+      "type_id": 1,
+      "main_url": 78
+    },
+    {
+      "id": 24,
+      "name": "mrCoolCola",
+      "button": "coke.gif",
+      "about": "Простенькая около-y2k страничка с всякой всячиной и кучей 88x31",
+      "type_id": 1,
+      "main_url": 79
+    },
+    {
+      "id": 25,
+      "name": "My Internet Country",
+      "button": "myinternet.gif",
+      "about": "Ретро-портал комнибирующий в себе социальную сеть и блоги! Работает на 2Г! Работает во всех браузерах!",
+      "type_id": 2,
+      "main_url": null
+    },
+    {
+      "id": 26,
+      "name": "<small>Russian<br>Creators<br>Web<br>Ring</small>",
+      "button": "",
+      "about": "Веб-кольцо независимых сайтов, которые создаются и развиваются на русском языке. Это сообщество людей и проектов, а не стран, национальностей или политики.\n<pre style=\"text-align:center;\"><a href=\"https://dionisiubrovka.github.io/russian-creators-webring/flashkeno/previous\"> &lt;-- </a> [RCWR] <a href=\"https://dionisiubrovka.github.io/russian-creators-webring/flashkeno/next\"> --&gt; </a></pre>",
+      "type_id": 167,
+      "main_url": null
+    }
+  ],
+  "urls": [
+    {
+      "id": 1,
+      "site_id": 1,
+      "type_id": 1,
+      "url": "https://ockolus.neocities.org/"
+    },
+    {
+      "id": 2,
+      "site_id": 2,
+      "type_id": 1,
+      "url": "https://forum.narod.ws/"
+    },
+    {
+      "id": 8,
+      "site_id": 6,
+      "type_id": 1,
+      "url": "https://vcfg-softworks.do.am/"
+    },
+    {
+      "id": 9,
+      "site_id": 5,
+      "type_id": 1,
+      "url": "https://ru.luxfero.su/"
+    },
+    {
+      "id": 10,
+      "site_id": 7,
+      "type_id": 1,
+      "url": "https://lorelpage.neocities.org/"
+    },
+    {
+      "id": 16,
+      "site_id": 8,
+      "type_id": 1,
+      "url": "https://vobla2.ru"
+    },
+    {
+      "id": 19,
+      "site_id": 4,
+      "type_id": 1,
+      "url": "https://lainlife.org/"
+    },
+    {
+      "id": 20,
+      "site_id": 4,
+      "type_id": 2,
+      "url": "http://[201:ea34:3017:90a7:d05b:5fd7:5c3b:a77f]/"
+    },
+    {
+      "id": 21,
+      "site_id": 4,
+      "type_id": 2,
+      "url": "http://lainlife.ygg/"
+    },
+    {
+      "id": 28,
+      "site_id": 3,
+      "type_id": 1,
+      "url": "https://retroshow.su"
+    },
+    {
+      "id": 30,
+      "site_id": 9,
+      "type_id": 257,
+      "url": "https://booru.yureki.ru"
+    },
+    {
+      "id": 32,
+      "site_id": 10,
+      "type_id": 257,
+      "url": "https://www.downgrade-net.ru"
+    },
+    {
+      "id": 33,
+      "site_id": 10,
+      "type_id": 256,
+      "url": "http://www.downgrade-net.ru"
+    },
+    {
+      "id": 34,
+      "site_id": 10,
+      "type_id": 257,
+      "url": "https://downgrade.hoho.ws"
+    },
+    {
+      "id": 35,
+      "site_id": 10,
+      "type_id": 256,
+      "url": "http://downgrade.hoho.ws"
+    },
+    {
+      "id": 36,
+      "site_id": 11,
+      "type_id": 257,
+      "url": "https://ladykosha.ru"
+    },
+    {
+      "id": 39,
+      "site_id": 12,
+      "type_id": 257,
+      "url": "https://khabarov.es"
+    },
+    {
+      "id": 40,
+      "site_id": 12,
+      "type_id": 256,
+      "url": "http://khabarov.es"
+    },
+    {
+      "id": 41,
+      "site_id": 13,
+      "type_id": 257,
+      "url": "https://www.vhabare.live"
+    },
+    {
+      "id": 42,
+      "site_id": 13,
+      "type_id": 256,
+      "url": "http://www.vhabare.live"
+    },
+    {
+      "id": 43,
+      "site_id": 14,
+      "type_id": 257,
+      "url": "https://downgrade.me.eu.org"
+    },
+    {
+      "id": 44,
+      "site_id": 15,
+      "type_id": 257,
+      "url": "https://downgrade.me.eu.org"
+    },
+    {
+      "id": 47,
+      "site_id": 18,
+      "type_id": 257,
+      "url": "https://drunkbook.oldcities.org"
+    },
+    {
+      "id": 48,
+      "site_id": 18,
+      "type_id": 256,
+      "url": "http://drunkbook.oldcities.org"
+    },
+    {
+      "id": 49,
+      "site_id": 18,
+      "type_id": 257,
+      "url": "https://drunkbook.narod.ws"
+    },
+    {
+      "id": 50,
+      "site_id": 18,
+      "type_id": 256,
+      "url": "http://drunkbook.narod.ws"
+    },
+    {
+      "id": 53,
+      "site_id": 17,
+      "type_id": 257,
+      "url": "https://site.narod.ws"
+    },
+    {
+      "id": 54,
+      "site_id": 17,
+      "type_id": 256,
+      "url": "http://site.narod.ws"
+    },
+    {
+      "id": 55,
+      "site_id": 17,
+      "type_id": 257,
+      "url": "https://site.oldcities.org"
+    },
+    {
+      "id": 56,
+      "site_id": 17,
+      "type_id": 256,
+      "url": "http://site.oldcities.org"
+    },
+    {
+      "id": 57,
+      "site_id": 16,
+      "type_id": 257,
+      "url": "https://downgrade.me.eu.org"
+    },
+    {
+      "id": 58,
+      "site_id": 16,
+      "type_id": 256,
+      "url": "http://downgrade.me.eu.org"
+    },
+    {
+      "id": 59,
+      "site_id": 19,
+      "type_id": 257,
+      "url": "https://library.narod.ws"
+    },
+    {
+      "id": 60,
+      "site_id": 19,
+      "type_id": 256,
+      "url": "http://library.narod.ws"
+    },
+    {
+      "id": 61,
+      "site_id": 19,
+      "type_id": 257,
+      "url": "https://library.w10.site"
+    },
+    {
+      "id": 62,
+      "site_id": 19,
+      "type_id": 256,
+      "url": "http://library.w10.site"
+    },
+    {
+      "id": 67,
+      "site_id": 20,
+      "type_id": 257,
+      "url": "https://felice-dev.w10.site"
+    },
+    {
+      "id": 68,
+      "site_id": 20,
+      "type_id": 256,
+      "url": "http://felice-dev.w10.site"
+    },
+    {
+      "id": 69,
+      "site_id": 20,
+      "type_id": 257,
+      "url": "https://felice-dev.narod.ws"
+    },
+    {
+      "id": 70,
+      "site_id": 20,
+      "type_id": 256,
+      "url": "http://felice-dev.narod.ws"
+    },
+    {
+      "id": 71,
+      "site_id": 21,
+      "type_id": 257,
+      "url": "https://lain.in.net"
+    },
+    {
+      "id": 75,
+      "site_id": 22,
+      "type_id": 3,
+      "url": "http://lainmos.i2p"
+    },
+    {
+      "id": 76,
+      "site_id": 22,
+      "type_id": 2,
+      "url": "http://[200:362:5cac:6d5c:53d4:dad1:d8f:9537]/"
+    },
+    {
+      "id": 77,
+      "site_id": 22,
+      "type_id": 257,
+      "url": "https://lain.moscow"
+    },
+    {
+      "id": 78,
+      "site_id": 23,
+      "type_id": 257,
+      "url": "https://rattka.net/"
+    },
+    {
+      "id": 82,
+      "site_id": 24,
+      "type_id": 3,
+      "url": "http://we55j6lt3wq47bfrz6y2warc2yp37ezehb2zaqma53pc7thylpja.b32.i2p"
+    },
+    {
+      "id": 83,
+      "site_id": 24,
+      "type_id": 280,
+      "url": "http://44qz5sp2cudqwbsu4t2wsjosowenepjcadgye7wtzxzqfl7cgs47h5qd.onion"
+    },
+    {
+      "id": 84,
+      "site_id": 24,
+      "type_id": 2,
+      "url": "http://[200:afaf:ad8b:b0c5:7b72:ec0f:4940:10f1]/"
+    },
+    {
+      "id": 85,
+      "site_id": 25,
+      "type_id": 256,
+      "url": "http://myintcountry.ru"
+    },
+    {
+      "id": 86,
+      "site_id": 25,
+      "type_id": 257,
+      "url": "https://myintcountry.ru"
+    },
+    {
+      "id": 87,
+      "site_id": 26,
+      "type_id": 257,
+      "url": "https://dionisiubrovka.github.io/russian-creators-webring"
+    }
+  ]
+}
