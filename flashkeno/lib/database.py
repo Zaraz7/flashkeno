@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+from pathlib import Path
 import sqlite3
 from ipaddress import ip_address, AddressValueError
 
@@ -463,3 +466,113 @@ WHERE s.id = ?
             ''', (site_id,))
             row = c.fetchone()
             return row[0] if row else None
+        
+    def backup_sites(self, output_path):
+            with self.get_connection() as conn:
+                c = conn.cursor()
+
+                c.execute('PRAGMA table_info(site)')
+                site_cols = {row[1] for row in c.fetchall()}
+                has_main_url = 'main_url' in site_cols
+
+                c.execute('SELECT id, name FROM site_type ORDER BY id')
+                site_types = [{'id': r[0], 'name': r[1]} for r in c.fetchall()]
+
+                c.execute('SELECT id, name FROM url_type ORDER BY id')
+                url_types = [{'id': r[0], 'name': r[1]} for r in c.fetchall()]
+
+                if has_main_url:
+                    c.execute('SELECT id, name, button, about, type_id, main_url FROM site ORDER BY id')
+                    sites = [
+                        {
+                            'id': r[0], 'name': r[1], 'button': r[2],
+                            'about': r[3], 'type_id': r[4], 'main_url': r[5]
+                        }
+                        for r in c.fetchall()
+                    ]
+                else:
+                    c.execute('SELECT id, name, button, about, type_id FROM site ORDER BY id')
+                    sites = [
+                        {
+                            'id': r[0], 'name': r[1], 'button': r[2],
+                            'about': r[3], 'type_id': r[4], 'main_url': None
+                        }
+                        for r in c.fetchall()
+                    ]
+
+                c.execute('SELECT id, site_id, type_id, url FROM url ORDER BY id')
+                urls = [
+                    {'id': r[0], 'site_id': r[1], 'type_id': r[2], 'url': r[3]}
+                    for r in c.fetchall()
+                ]
+
+            data = {
+                'version': 1,
+                'created_at': datetime.now().isoformat(timespec='seconds'),
+                'site_types': site_types,
+                'url_types': url_types,
+                'sites': sites,
+                'urls': urls,
+            }
+
+            out = Path(output_path)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            with open(out, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+
+            return len(sites), len(urls)
+
+    def restore_sites(self, input_path):
+        with open(input_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        with self.get_connection() as conn:
+            c = conn.cursor()
+
+            c.execute('PRAGMA table_info(site)')
+            site_cols = {row[1] for row in c.fetchall()}
+            has_main_url = 'main_url' in site_cols
+
+            try:
+                # Очищаем только записи сайтов и URL; таблицу suggestion не трогаем
+                c.execute('DELETE FROM url')
+                c.execute('DELETE FROM site')
+
+                for st in data.get('site_types', []):
+                    c.execute(
+                        'INSERT OR REPLACE INTO site_type (id, name) VALUES (?, ?)',
+                        (st['id'], st['name'])
+                    )
+
+                for ut in data.get('url_types', []):
+                    c.execute(
+                        'INSERT OR REPLACE INTO url_type (id, name) VALUES (?, ?)',
+                        (ut['id'], ut['name'])
+                    )
+
+                for s in data.get('sites', []):
+                    if has_main_url:
+                        c.execute(
+                            'INSERT INTO site (id, name, button, about, type_id, main_url) '
+                            'VALUES (?, ?, ?, ?, ?, ?)',
+                            (s['id'], s['name'], s['button'], s['about'], s['type_id'], s.get('main_url'))
+                        )
+                    else:
+                        c.execute(
+                            'INSERT INTO site (id, name, button, about, type_id) '
+                            'VALUES (?, ?, ?, ?, ?)',
+                            (s['id'], s['name'], s['button'], s['about'], s['type_id'])
+                        )
+
+                for u in data.get('urls', []):
+                    c.execute(
+                        'INSERT INTO url (id, site_id, type_id, url) VALUES (?, ?, ?, ?)',
+                        (u['id'], u['site_id'], u['type_id'], u['url'])
+                    )
+
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
+
+        return len(data.get('sites', [])), len(data.get('urls', []))

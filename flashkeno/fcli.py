@@ -204,6 +204,32 @@ def cmd_suggestions_delete(args):
     else:
         print(f'Cannot delete suggestion {args.id}')
 
+def cmd_backup(args):
+    from datetime import datetime
+    if args.output:
+        out_path = Path(args.output)
+    else:
+        ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+        out_path = Path(__file__).parent / 'backups' / f'sites_backup_{ts}.json'
+
+    sites_count, urls_count = db.backup_sites(out_path)
+    print(f'Backup saved to {out_path} ({sites_count} sites, {urls_count} urls)')
+
+def cmd_restore(args):
+    backup_path = Path(args.file)
+    if not backup_path.exists():
+        print(f'File not found: {backup_path}')
+        return
+
+    if not args.yes:
+        ans = input('This will overwrite current sites and URLs (suggestions are kept). Continue? [y/N]: ')
+        if ans.strip().lower() not in ('y', 'yes'):
+            print('Aborted')
+            return
+
+    sites_count, urls_count = db.restore_sites(backup_path)
+    print(f'Restored {sites_count} sites and {urls_count} urls from {backup_path}')
+
 def main():
     p = argparse.ArgumentParser(prog='sitectl')
     sub = p.add_subparsers(dest='cmd')
@@ -275,6 +301,14 @@ def main():
     a.add_argument('id', type=int, help='Suggestion ID')
     a.set_defaults(func=cmd_suggestions_delete)
 
+    a = sub.add_parser('backup', help='Backup sites and URLs to JSON (without suggestions)')
+    a.add_argument('-o', '--output', help='Output JSON file path')
+    a.set_defaults(func=cmd_backup)
+
+    a = sub.add_parser('restore', help='Restore sites and URLs from JSON backup')
+    a.add_argument('file', help='Path to backup JSON file')
+    a.add_argument('-y', '--yes', action='store_true', help='Skip confirmation prompt')
+    a.set_defaults(func=cmd_restore)
 
 
 
