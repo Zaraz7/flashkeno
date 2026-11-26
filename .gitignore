@@ -9,3 +9,6 @@ __pycache__/
 # WEB
 /flashkeno/web/index.html
 /index.html
+*.cgi
+flashkeno/temp/
+flashkeno/captcha/fonts
