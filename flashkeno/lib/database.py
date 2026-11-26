@@ -582,7 +582,7 @@ if __name__ == "__main__":
         db_path = Path(__file__).parent.parent / 'db' / 'sites.db'
         print(db_path)
         db = SiteDatabase(db_path)
-        suggestion_id = db.add_suggestion(
+        print(db.add_suggestion(
             email=sys.argv(1),
             name=sys.argv(2),
             url=sys.argv(3),
@@ -590,5 +590,5 @@ if __name__ == "__main__":
             about=sys.argv(5),
             type_id=sys.argv(6),
             client_ip=sys.argv(7),
-            client_agent=sys.argv(8))
+            client_agent=sys.argv(8)))
     
