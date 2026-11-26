@@ -7,6 +7,7 @@ import codecs
 import os
 import traceback
 from pathlib import Path
+import subprocess
 
 print("Content-type: text/html\n")
 
@@ -63,14 +64,29 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
         button = form.getfirst("button", "")
         about = form.getfirst("about", "")
         type_id = form.getfirst("type_id", "0")
+        captcha_token = form.getfirst("captcha_token", "")
+        captcha_answer = form.getfirst("captcha_answer", "")
 
 
 
         if not all([name, url, about]):
+            captcha_bin = Path(__file__).parent / 'captcha.cgi'
+            check = subprocess.run(
+            [str(captcha_bin), '--verify', captcha_token, captcha_answer],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+            )
+            if check.returncode != 0:
+                log.write('Captcha failed\n')
+                print('Ошибка капчи', head_jaw)
+                print("""<h1>Ошибка: Неверная или просроченная капча</h1>
+            <p><a href="/cgi-bin/suggest_form.cgi">Вернуться к форме заявки</a></p>""")
+                print(html_end)
+                sys.exit()
             log.write('Not all entrys\n')
             print('Чего чего?',head_jaw)
             print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
-        <p><a href="/suggest.html">Вернуться форме заявки</a></p>""")
+        <p><a href="/cgi-bin/suggest_form.cgi">Вернуться форме заявки</a></p>""")
             print(html_end)
             sys.exit()
 
@@ -95,7 +111,7 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
         print("""<h1>Спасибо за заявку!</h1>
                 <p>Ваша заявка принята и будет рассмотрена в ближайшее время.<br>
                 Номер заявки: """,suggestion_id)
-        print('<br><a href="/suggest.html">Новая заявка</a>')
+        print('<br><a href="/cgi-bin/suggest_form.cgi">Новая заявка</a>')
 
     except Exception as e:
         log.write(f"Error: {str(e)}\n")
