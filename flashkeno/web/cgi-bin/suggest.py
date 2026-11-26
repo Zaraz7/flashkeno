@@ -70,23 +70,24 @@ with open('/home/villager/flashkeno_error.log', 'a') as log:
 
 
         if not all([name, url, about]):
-            captcha_bin = Path(__file__).parent / 'captcha.cgi'
-            check = subprocess.run(
+            log.write('Not all entrys\n')
+            print('Чего чего?', head_jaw)
+            print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
+        <p><a href="/cgi-bin/suggest_form.cgi">Вернуться к форме заявки</a></p>""")
+            print(html_end)
+            sys.exit()
+
+        captcha_bin = Path(__file__).parent / 'captcha.cgi'
+        check = subprocess.run(
             [str(captcha_bin), '--verify', captcha_token, captcha_answer],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
-            )
-            if check.returncode != 0:
-                log.write('Captcha failed\n')
-                print('Ошибка капчи', head_jaw)
-                print("""<h1>Ошибка: Неверная или просроченная капча</h1>
-            <p><a href="/cgi-bin/suggest_form.cgi">Вернуться к форме заявки</a></p>""")
-                print(html_end)
-                sys.exit()
-            log.write('Not all entrys\n')
-            print('Чего чего?',head_jaw)
-            print("""<h1>Ошибка: Заполните все обязательные поля в заявке</h1>
-        <p><a href="/cgi-bin/suggest_form.cgi">Вернуться форме заявки</a></p>""")
+        )
+        if check.returncode != 0:
+            log.write('Captcha failed\n')
+            print('Ошибка капчи', head_jaw)
+            print("""<h1>Ошибка: Неверная или просроченная капча</h1>
+        <p><a href="/cgi-bin/suggest_form.cgi">Вернуться к форме заявки</a></p>""")
             print(html_end)
             sys.exit()
 
